@@ -99,7 +99,6 @@ img { display: block; object-fit: contain; }
 .date-controls { display: flex; gap: 8px; position: relative; }
 .date-controls button { background: var(--paper); }
 .calendar-control { position: relative; }
-.date-input { position: absolute; z-index: 4; right: 0; top: 48px; border: 1px solid var(--line); border-radius: 10px; padding: 11px; background: white; box-shadow: 0 15px 35px rgba(20,20,17,.15); }
 .filter-bar { display: flex; align-items: center; gap: 4px; margin: 28px 0 18px; padding: 5px; border: 1px solid var(--line); background: var(--paper); border-radius: 12px; }
 .filter-bar > button { display: flex; align-items: center; gap: 7px; border: 0; background: transparent; color: var(--muted); padding: 10px 15px; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; }
 .filter-bar > button svg { width: 14px; }
@@ -110,6 +109,8 @@ img { display: block; object-fit: contain; }
 .timezone-select select { max-width: 165px; border: 0; outline: none; color: var(--muted); background: transparent; font-size: 12px; }
 .refresh-indicator { color: var(--orange-dark); font-size: 11px; display: flex; align-items: center; justify-content: end; gap: 6px; margin-bottom: 8px; }
 .refresh-indicator svg { width: 13px; animation: spin 1s linear infinite; }
+.match-load-sentinel { min-height: 72px; display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 12px; }
+.match-load-sentinel svg { width: 14px; animation: spin 1s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .league-list { display: grid; gap: 18px; }

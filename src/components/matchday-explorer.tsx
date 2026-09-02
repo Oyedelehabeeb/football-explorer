@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate } from '@tanstack/react-router'
 import { CalendarDays, ChevronLeft, ChevronRight, Clock3, Radio, RefreshCw, Search, ShieldAlert, Trophy } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
+import { Calendar } from '#/components/ui/calendar'
+import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
 import { dateInTimezone, groupFixtures, isFinishedStatus, isLiveStatus, matchesFilter, offsetDate } from '#/lib/football'
 import { getMatchday } from '#/server/fixtures'
 import type { FixtureSummary, MatchFilter } from '#/lib/football'
@@ -13,6 +15,8 @@ const FILTERS: Array<{ value: MatchFilter; label: string }> = [
   { value: 'all', label: 'All matches' }, { value: 'live', label: 'Live' },
   { value: 'upcoming', label: 'Upcoming' }, { value: 'finished', label: 'Finished' },
 ]
+
+const MATCHES_PER_PAGE = 30
 
 interface MatchdayExplorerProps { date: string; timezone: string; filter: MatchFilter; initialData: MatchdayResult }
 
@@ -54,6 +58,8 @@ function EmptyState({ filter }: { filter: MatchFilter }) {
 export function MatchdayExplorer({ date, timezone, filter, initialData }: MatchdayExplorerProps) {
   const navigate = useNavigate({ from: '/' })
   const [calendarOpen, setCalendarOpen] = useState(false)
+  const [visibleCount, setVisibleCount] = useState(MATCHES_PER_PAGE)
+  const loadMoreRef = useRef<HTMLDivElement>(null)
   const query = useQuery({
     queryKey: ['matchday', date, timezone], queryFn: () => getMatchday({ data: { date, timezone } }), initialData,
     refetchInterval: (state) => {
@@ -70,11 +76,32 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
   const result = query.data
   const fixtures = result.ok ? result.fixtures : []
   const filtered = useMemo(() => fixtures.filter((fixture) => matchesFilter(fixture, filter)), [fixtures, filter])
-  const groups = useMemo(() => groupFixtures(filtered), [filtered])
+  const visibleFixtures = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
+  const groups = useMemo(() => groupFixtures(visibleFixtures), [visibleFixtures])
+  const hasMore = visibleCount < filtered.length
   const liveCount = fixtures.filter((fixture) => isLiveStatus(fixture.fixture.status.short)).length
   const finishedCount = fixtures.filter((fixture) => isFinishedStatus(fixture.fixture.status.short)).length
   const setSearch = (next: { date?: string; filter?: MatchFilter; timezone?: string }) => void navigate({ search: { date: next.date ?? date, timezone: next.timezone ?? timezone, filter: next.filter ?? filter } })
   const dateTitle = new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`))
+
+  useEffect(() => setVisibleCount(MATCHES_PER_PAGE), [date, timezone, filter])
+
+  useEffect(() => {
+    const target = loadMoreRef.current
+    if (!target || !hasMore) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setVisibleCount((count) => Math.min(count + MATCHES_PER_PAGE, filtered.length))
+        }
+      },
+      { rootMargin: '400px 0px' },
+    )
+
+    observer.observe(target)
+    return () => observer.disconnect()
+  }, [filtered.length, hasMore])
 
   return (
     <main>
@@ -90,7 +117,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
       <section className="matchday-content page-shell" aria-labelledby="fixtures-title">
         <div className="matchday-heading"><div><span className="section-number">01 / MATCH CENTRE</span><h2 id="fixtures-title">{dateTitle}</h2></div>
           <div className="date-controls"><Button variant="outline" size="icon" aria-label="Previous day" onClick={() => setSearch({ date: offsetDate(date, -1) })}><ChevronLeft aria-hidden="true" /></Button>
-            <div className="calendar-control"><Button variant="outline" onClick={() => setCalendarOpen((value) => !value)} aria-expanded={calendarOpen}><CalendarDays aria-hidden="true" /> Choose date</Button>{calendarOpen && <input aria-label="Match date" className="date-input" type="date" value={date} onChange={(event) => { if (event.target.value) setSearch({ date: event.target.value }); setCalendarOpen(false) }} />}</div>
+            <div className="calendar-control"><Popover open={calendarOpen} onOpenChange={setCalendarOpen}><PopoverTrigger asChild><Button variant="outline" aria-label={`Choose match date, currently ${dateTitle}`}><CalendarDays aria-hidden="true" /> Choose date</Button></PopoverTrigger><PopoverContent className="w-auto p-0" align="end"><Calendar mode="single" selected={new Date(`${date}T12:00:00`)} onSelect={(selected) => { if (!selected) return; const nextDate = `${selected.getFullYear()}-${String(selected.getMonth() + 1).padStart(2, '0')}-${String(selected.getDate()).padStart(2, '0')}`; setSearch({ date: nextDate }); setCalendarOpen(false) }} autoFocus /></PopoverContent></Popover></div>
             <Button variant="outline" size="icon" aria-label="Next day" onClick={() => setSearch({ date: offsetDate(date, 1) })}><ChevronRight aria-hidden="true" /></Button></div></div>
 
         <div className="filter-bar" role="group" aria-label="Filter matches by status">
@@ -99,7 +126,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
         </div>
         {query.isFetching && <div className="refresh-indicator"><RefreshCw aria-hidden="true" /> Updating scores</div>}
         {!result.ok ? <div className="error-state" role="alert"><ShieldAlert aria-hidden="true" /><div><h2>Match centre unavailable</h2><p>{result.message}</p></div><Button variant="outline" onClick={() => void query.refetch()}>Try again</Button></div>
-          : groups.length === 0 ? <EmptyState filter={filter} /> : <div className="league-list">{groups.map((group) => <section className="league-group" key={group.key} aria-labelledby={`league-${group.league.id}`}><header><div className="league-identity"><img src={group.league.logo} alt="" width={42} height={42} loading="lazy" /><div><span>{group.league.country}</span><h3 id={`league-${group.league.id}`}>{group.league.name}</h3></div></div><span className="fixture-count"><Trophy aria-hidden="true" /> {group.fixtures.length} {group.fixtures.length === 1 ? 'fixture' : 'fixtures'}</span></header><div>{group.fixtures.map((fixture) => <MatchRow fixture={fixture} key={fixture.fixture.id} />)}</div></section>)}</div>}
+          : groups.length === 0 ? <EmptyState filter={filter} /> : <><div className="league-list">{groups.map((group) => <section className="league-group" key={group.key} aria-labelledby={`league-${group.league.id}`}><header><div className="league-identity"><img src={group.league.logo} alt="" width={42} height={42} loading="lazy" /><div><span>{group.league.country}</span><h3 id={`league-${group.league.id}`}>{group.league.name}</h3></div></div><span className="fixture-count"><Trophy aria-hidden="true" /> {group.fixtures.length} {group.fixtures.length === 1 ? 'fixture' : 'fixtures'}</span></header><div>{group.fixtures.map((fixture) => <MatchRow fixture={fixture} key={fixture.fixture.id} />)}</div></section>)}</div><div ref={loadMoreRef} className="match-load-sentinel" aria-live="polite">{hasMore ? <><RefreshCw aria-hidden="true" /> Loading more matches</> : `Showing all ${filtered.length} matches`}</div></>}
       </section>
     </main>
   )
