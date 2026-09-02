@@ -281,6 +281,8 @@ img { display: block; object-fit: contain; }
 .competition-type-tabs button.is-active { color: var(--ink); border-bottom-color: var(--orange); }
 .competition-list { border: 1px solid var(--line); border-radius: 15px; overflow: hidden; background: var(--paper); }
 .competition-row { display: grid; grid-template-columns: 58px 62px minmax(220px,1fr) 150px 170px 100px; align-items: center; min-height: 92px; padding: 12px 20px; border-bottom: 1px solid #eceae4; }
+.competition-row { color: inherit; text-decoration: none; }
+.competition-row:focus-visible { position: relative; z-index: 1; outline: 3px solid color-mix(in srgb, var(--orange) 45%, transparent); outline-offset: -3px; }
 .competition-row:last-child { border-bottom: 0; }
 .competition-row:hover { background: #fdfaf7; }
 .competition-rank { color: #aaa79e; font-family: 'Space Grotesk'; font-size: 10px; }
@@ -298,6 +300,92 @@ img { display: block; object-fit: contain; }
 .competition-kind { justify-self: end; display: inline-flex; align-items: center; gap: 5px; border-radius: 12px; padding: 6px 9px; color: var(--muted); background: var(--soft); font-size: 9px; font-weight: 700; }
 .competition-kind svg { width: 11px; }
 .competition-kind.is-cup { color: var(--orange-dark); background: #fff0ea; }
+
+/* Competition detail */
+.competition-detail-page { min-height: 70vh; }
+.competition-detail-hero { position: relative; overflow: hidden; color: white; background: var(--black); }
+.competition-detail-hero::after { content: ''; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(circle at 80% 25%, rgba(240,90,36,.2), transparent 32%), repeating-linear-gradient(120deg, transparent 0 42px, rgba(255,255,255,.018) 43px 44px); }
+.competition-detail-hero .page-shell { position: relative; z-index: 1; padding-block: 30px 42px; }
+.competition-identity { display: flex; align-items: center; gap: 28px; margin-top: 36px; }
+.competition-detail-logo { width: 116px; height: 116px; flex: none; display: grid; place-items: center; border-radius: 22px; background: white; box-shadow: 0 20px 45px rgba(0,0,0,.25); }
+.competition-detail-logo img { width: 84px; height: 84px; }
+.competition-identity > div:last-child > span { display: flex; align-items: center; gap: 8px; color: #aaa9a4; font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+.competition-identity > div:last-child > span img { width: 19px; height: 13px; }
+.competition-identity h1 { font-family: 'Space Grotesk'; font-size: clamp(40px, 6vw, 70px); line-height: 1; letter-spacing: -.055em; margin: 10px 0 12px; }
+.competition-identity p { color: #aaa9a4; margin: 0; }
+.competition-detail-controls { display: grid; grid-template-columns: 220px 130px 130px; justify-content: end; gap: 1px; margin-top: -68px; }
+.competition-detail-controls > label, .competition-detail-controls > div { min-height: 68px; padding: 13px 16px; background: #252521; display: grid; align-content: center; gap: 5px; }
+.competition-detail-controls > :first-child { border-radius: 10px 0 0 10px; }
+.competition-detail-controls > :last-child { border-radius: 0 10px 10px 0; }
+.competition-detail-controls span { color: #85847e; font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; }
+.competition-detail-controls strong { font-family: 'Space Grotesk'; font-size: 20px; }
+.competition-detail-controls [data-slot='select-trigger'] { width: 100%; height: 30px; border: 0; padding: 0; color: white; background: transparent; box-shadow: none; }
+.competition-detail-layout { display: grid; grid-template-columns: minmax(0,1fr) 280px; gap: 28px; align-items: start; padding-block: 54px 100px; }
+.competition-detail-main { min-width: 0; display: grid; gap: 26px; }
+.competition-panel { overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: var(--paper); }
+.competition-panel > header { min-height: 82px; padding: 18px 22px; display: flex; align-items: center; justify-content: space-between; gap: 18px; border-bottom: 1px solid var(--line); background: #faf9f6; }
+.competition-panel > header h2 { font-family: 'Space Grotesk'; font-size: 22px; letter-spacing: -.035em; margin: 4px 0 0; }
+.competition-panel > header small { color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+.round-select { width: min(250px, 46vw); background: white; }
+.standings-scroll { overflow-x: auto; }
+.competition-standings { width: 100%; min-width: 680px; border-collapse: collapse; font-size: 11px; }
+.competition-standings th, .competition-standings td { height: 51px; padding: 8px 10px; border-bottom: 1px solid #eceae4; text-align: center; }
+.competition-standings thead th { height: 38px; color: var(--muted); font-size: 8px; text-transform: uppercase; letter-spacing: .08em; background: #fdfcf9; }
+.competition-standings th:nth-child(2) { text-align: left; }
+.competition-standings tbody th { display: flex; align-items: center; gap: 10px; font-size: 12px; }
+.competition-standings tbody th img { width: 28px; height: 28px; }
+.competition-standings tbody tr:last-child th, .competition-standings tbody tr:last-child td { border-bottom: 0; }
+.standing-rank { width: 25px; height: 25px; display: inline-grid; place-items: center; border-radius: 50%; background: var(--soft); font-weight: 700; }
+.competition-standings tbody tr:first-child .standing-rank { color: white; background: var(--orange); }
+.standing-form { font-family: 'Space Grotesk'; font-size: 9px; letter-spacing: .08em; }
+.standing-group-title { margin: 0; padding: 13px 20px; color: var(--orange-dark); background: #fff8f4; border-bottom: 1px solid #f7ded4; font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+.competition-fixtures { display: grid; }
+.competition-fixture { min-height: 86px; padding: 13px 20px; display: grid; grid-template-columns: 135px minmax(150px,1fr) 62px minmax(150px,1fr); align-items: center; gap: 13px; color: inherit; text-decoration: none; border-bottom: 1px solid #eceae4; }
+.competition-fixture:last-child { border-bottom: 0; }
+.competition-fixture:hover { background: #fdfaf7; }
+.competition-fixture:focus-visible { outline: 3px solid color-mix(in srgb, var(--orange) 45%, transparent); outline-offset: -3px; }
+.competition-fixture-meta { display: grid; gap: 4px; }
+.competition-fixture-meta > span { font-size: 10px; font-weight: 700; }
+.competition-fixture-meta > span.is-live { color: var(--orange-dark); }
+.competition-fixture-meta small { overflow: hidden; color: var(--muted); font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.competition-fixture-team { display: flex; align-items: center; justify-content: end; gap: 10px; min-width: 0; text-align: right; font-size: 11px; font-weight: 600; }
+.competition-fixture-team.is-away { justify-content: start; text-align: left; }
+.competition-fixture-team span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.competition-fixture-team img { width: 32px; height: 32px; flex: none; }
+.competition-fixture > strong { font-family: 'Space Grotesk'; font-size: 15px; text-align: center; }
+.competition-team-grid { display: grid; grid-template-columns: 1fr 1fr; }
+.competition-team-grid article { min-height: 84px; padding: 14px 18px; display: grid; grid-template-columns: 42px minmax(0,1fr) auto; align-items: center; gap: 12px; border-right: 1px solid #eceae4; border-bottom: 1px solid #eceae4; }
+.competition-team-grid article:nth-child(even) { border-right: 0; }
+.competition-team-grid article img { width: 38px; height: 38px; }
+.competition-team-grid h3 { overflow: hidden; margin: 0; font-family: 'Space Grotesk'; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
+.competition-team-grid p { display: flex; align-items: center; gap: 4px; color: var(--muted); margin: 4px 0 0; font-size: 9px; }
+.competition-team-grid p svg { width: 10px; }
+.competition-team-grid article > span { color: #aaa79e; font-family: 'Space Grotesk'; font-size: 10px; }
+.competition-detail-sidebar { position: sticky; top: 24px; display: grid; gap: 16px; }
+.competition-detail-sidebar > section { padding: 20px; border: 1px solid var(--line); border-radius: 15px; background: var(--paper); }
+.competition-detail-sidebar > section > svg { width: 21px; color: var(--orange); margin-bottom: 10px; }
+.competition-detail-sidebar > section > span { display: block; font-family: 'Space Grotesk'; font-weight: 700; }
+.competition-detail-sidebar dl { margin: 14px 0 0; }
+.competition-detail-sidebar dl > div { display: flex; justify-content: space-between; gap: 14px; padding: 10px 0; border-top: 1px solid #eceae4; font-size: 10px; }
+.competition-detail-sidebar dt { color: var(--muted); }
+.competition-detail-sidebar dd { margin: 0; font-weight: 700; text-align: right; }
+.competition-detail-sidebar ul { list-style: none; padding: 0; margin: 15px 0; display: grid; gap: 9px; }
+.competition-detail-sidebar li { display: flex; align-items: center; gap: 7px; color: #aaa79e; font-size: 10px; }
+.competition-detail-sidebar li > svg, .competition-detail-sidebar li > span { width: 14px; height: 14px; padding: 2px; border-radius: 50%; color: white; background: #cbc8bf; }
+.competition-detail-sidebar li.is-available { color: var(--ink); }
+.competition-detail-sidebar li.is-available > svg { background: #26996a; }
+.competition-detail-sidebar section > p { color: var(--muted); margin: 0; font-size: 9px; line-height: 1.5; }
+.competition-sidebar-note { display: flex; align-items: flex-start; gap: 11px; background: transparent !important; }
+.competition-sidebar-note > svg { flex: none; margin: 0 !important; }
+.competition-unavailable { min-height: 160px; padding: 28px; display: flex; align-items: center; justify-content: center; gap: 14px; color: var(--muted); }
+.competition-unavailable > svg { width: 24px; color: #aaa79e; }
+.competition-unavailable strong { color: var(--ink); }
+.competition-unavailable p { margin: 4px 0 0; font-size: 10px; }
+.competition-detail-error { min-height: 65vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.competition-detail-error > svg { width: 44px; color: var(--orange); }
+.competition-detail-error h1 { font-family: 'Space Grotesk'; margin: 15px 0 5px; }
+.competition-detail-error p { color: var(--muted); margin: 0 0 20px; }
+.competition-detail-error a { display: inline-flex; align-items: center; gap: 7px; color: white; background: var(--black); padding: 10px 14px; border-radius: 8px; text-decoration: none; font-size: 11px; }
 
 @media (max-width: 800px) {
   .page-shell { width: min(100% - 28px, 660px); }
@@ -348,6 +436,22 @@ img { display: block; object-fit: contain; }
   .competition-name { padding-right: 8px; }
   .competition-kind { font-size: 0; padding: 7px; }
   .competition-kind svg { width: 13px; }
+  .competition-identity { align-items: flex-start; gap: 18px; margin-top: 28px; }
+  .competition-detail-logo { width: 76px; height: 76px; border-radius: 16px; }
+  .competition-detail-logo img { width: 55px; height: 55px; }
+  .competition-identity h1 { font-size: clamp(33px, 10vw, 50px); }
+  .competition-identity p { font-size: 12px; }
+  .competition-detail-controls { grid-template-columns: 1.5fr 1fr 1fr; margin-top: 32px; }
+  .competition-detail-controls > label, .competition-detail-controls > div { min-width: 0; padding-inline: 11px; }
+  .competition-detail-layout { grid-template-columns: 1fr; padding-block: 28px 70px; }
+  .competition-detail-sidebar { position: static; grid-row: 1; grid-template-columns: 1fr 1fr; }
+  .competition-sidebar-note { display: none !important; }
+  .competition-fixture { grid-template-columns: 62px minmax(90px,1fr) 44px minmax(90px,1fr); padding-inline: 12px; gap: 7px; }
+  .competition-fixture-meta small { display: none; }
+  .competition-fixture-team { gap: 6px; font-size: 9px; }
+  .competition-fixture-team img { width: 27px; height: 27px; }
+  .competition-team-grid { grid-template-columns: 1fr; }
+  .competition-team-grid article { border-right: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }

@@ -11,6 +11,8 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CompetitionsRouteImport } from './routes/competitions'
+import { Route as CompetitionsIndexRouteImport } from './routes/competitions.index'
+import { Route as CompetitionsLeagueIdRouteImport } from './routes/competitions.$leagueId'
 import { Route as MatchesFixtureIdRouteImport } from './routes/matches.$fixtureId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -23,6 +25,16 @@ const CompetitionsRoute = CompetitionsRouteImport.update({
   path: '/competitions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const CompetitionsIndexRoute = CompetitionsIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CompetitionsRoute,
+} as any)
+const CompetitionsLeagueIdRoute = CompetitionsLeagueIdRouteImport.update({
+  id: '/$leagueId',
+  path: '/$leagueId',
+  getParentRoute: () => CompetitionsRoute,
+} as any)
 const MatchesFixtureIdRoute = MatchesFixtureIdRouteImport.update({
   id: '/matches/$fixtureId',
   path: '/matches/$fixtureId',
@@ -31,31 +43,47 @@ const MatchesFixtureIdRoute = MatchesFixtureIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/competitions': typeof CompetitionsRoute
+  '/competitions': typeof CompetitionsRouteWithChildren
+  '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
+  '/competitions/': typeof CompetitionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/competitions': typeof CompetitionsRoute
+  '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
+  '/competitions': typeof CompetitionsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/competitions': typeof CompetitionsRoute
+  '/competitions': typeof CompetitionsRouteWithChildren
+  '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
+  '/competitions/': typeof CompetitionsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/competitions' | '/matches/$fixtureId'
+  fullPaths:
+    | '/'
+    | '/competitions'
+    | '/competitions/$leagueId'
+    | '/matches/$fixtureId'
+    | '/competitions/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/competitions' | '/matches/$fixtureId'
-  id: '__root__' | '/' | '/competitions' | '/matches/$fixtureId'
+  to: '/' | '/competitions/$leagueId' | '/matches/$fixtureId' | '/competitions'
+  id:
+    | '__root__'
+    | '/'
+    | '/competitions'
+    | '/competitions/$leagueId'
+    | '/matches/$fixtureId'
+    | '/competitions/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  CompetitionsRoute: typeof CompetitionsRoute
+  CompetitionsRoute: typeof CompetitionsRouteWithChildren
   MatchesFixtureIdRoute: typeof MatchesFixtureIdRoute
 }
 
@@ -75,6 +103,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CompetitionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/competitions/': {
+      id: '/competitions/'
+      path: '/'
+      fullPath: '/competitions/'
+      preLoaderRoute: typeof CompetitionsIndexRouteImport
+      parentRoute: typeof CompetitionsRoute
+    }
+    '/competitions/$leagueId': {
+      id: '/competitions/$leagueId'
+      path: '/$leagueId'
+      fullPath: '/competitions/$leagueId'
+      preLoaderRoute: typeof CompetitionsLeagueIdRouteImport
+      parentRoute: typeof CompetitionsRoute
+    }
     '/matches/$fixtureId': {
       id: '/matches/$fixtureId'
       path: '/matches/$fixtureId'
@@ -85,9 +127,23 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface CompetitionsRouteChildren {
+  CompetitionsLeagueIdRoute: typeof CompetitionsLeagueIdRoute
+  CompetitionsIndexRoute: typeof CompetitionsIndexRoute
+}
+
+const CompetitionsRouteChildren: CompetitionsRouteChildren = {
+  CompetitionsLeagueIdRoute: CompetitionsLeagueIdRoute,
+  CompetitionsIndexRoute: CompetitionsIndexRoute,
+}
+
+const CompetitionsRouteWithChildren = CompetitionsRoute._addFileChildren(
+  CompetitionsRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  CompetitionsRoute: CompetitionsRoute,
+  CompetitionsRoute: CompetitionsRouteWithChildren,
   MatchesFixtureIdRoute: MatchesFixtureIdRoute,
 }
 export const routeTree = rootRouteImport

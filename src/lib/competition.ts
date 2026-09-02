@@ -24,6 +24,25 @@ export interface Competition {
   seasons: CompetitionSeason[]
 }
 
+export interface StandingRow {
+  rank: number
+  team: { id: number; name: string; logo: string }
+  points: number
+  goalsDiff: number
+  group: string
+  form: string | null
+  status: string
+  description: string | null
+  all: { played: number; win: number; draw: number; lose: number; goals: { for: number; against: number } }
+}
+
+export interface CompetitionTeam {
+  team: { id: number; name: string; code: string | null; country: string; founded: number | null; national: boolean; logo: string }
+  venue: { id: number | null; name: string | null; city: string | null; capacity: number | null; surface: string | null; image: string | null }
+}
+
+export interface CompetitionRound { round: string; dates: string[] }
+
 export function currentSeason(competition: Competition) {
   return competition.seasons.find((season) => season.current) ?? competition.seasons.at(-1)
 }

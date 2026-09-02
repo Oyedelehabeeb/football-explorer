@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
 import { isLiveStatus } from '#/lib/football'
+import { apiFootballPayloadError } from '#/server/api-football-error'
 
 import type { FixtureSummary } from '#/lib/football'
 
@@ -95,17 +96,9 @@ export const getMatchday = createServerFn({ method: 'GET' })
         response?: FixtureSummary[]
       }
 
-      const hasErrors = Array.isArray(payload.errors)
-        ? payload.errors.length > 0
-        : Boolean(payload.errors && Object.keys(payload.errors).length)
-
-      if (hasErrors || !Array.isArray(payload.response)) {
-        return {
-          ok: false,
-          kind: 'provider',
-          message: 'The football data service could not complete this request.',
-        }
-      }
+      const payloadError = apiFootballPayloadError(payload.errors)
+      if (payloadError) return { ok: false, ...payloadError }
+      if (!Array.isArray(payload.response)) return { ok: false, kind: 'provider', message: 'API-Football returned an invalid response.' }
 
       const value: MatchdayResult = {
         ok: true,

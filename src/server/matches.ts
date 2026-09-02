@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 
 import { isFinishedStatus, isLiveStatus } from '#/lib/football'
+import { apiFootballPayloadError } from '#/server/api-football-error'
 
 import type { FixtureDetail } from '#/lib/match'
 
@@ -49,8 +50,9 @@ export const getMatchDetail = createServerFn({ method: 'GET' })
       if (!response.ok) return { ok: false, kind: 'provider', message: `The football data service returned an error (${response.status}).` }
 
       const payload = (await response.json()) as { errors?: unknown[] | Record<string, unknown>; response?: FixtureDetail[] }
-      const hasErrors = Array.isArray(payload.errors) ? payload.errors.length > 0 : Boolean(payload.errors && Object.keys(payload.errors).length)
-      if (hasErrors || !Array.isArray(payload.response)) return { ok: false, kind: 'provider', message: 'The football data service could not complete this request.' }
+      const payloadError = apiFootballPayloadError(payload.errors)
+      if (payloadError) return { ok: false, ...payloadError }
+      if (!Array.isArray(payload.response)) return { ok: false, kind: 'provider', message: 'API-Football returned an invalid response.' }
       const match = payload.response.at(0)
       if (!match) return { ok: false, kind: 'not-found', message: 'This fixture could not be found.' }
 

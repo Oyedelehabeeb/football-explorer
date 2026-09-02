@@ -1,5 +1,7 @@
 import { createServerFn } from '@tanstack/react-start'
 
+import { apiFootballPayloadError } from '#/server/api-football-error'
+
 import type { Competition } from '#/lib/competition'
 
 export type CompetitionsResult =
@@ -8,6 +10,11 @@ export type CompetitionsResult =
 
 let cache: { expiresAt: number; value: CompetitionsResult } | undefined
 
+export function findCachedCompetition(leagueId: number, season: number) {
+  if (!cache || cache.expiresAt <= Date.now() || !cache.value.ok) return undefined
+  return cache.value.competitions.find((competition) => competition.league.id === leagueId && competition.seasons.some((item) => item.year === season))
+}
+
 export const getCurrentCompetitions = createServerFn({ method: 'GET' }).handler(async (): Promise<CompetitionsResult> => {
   if (cache && cache.expiresAt > Date.now()) return cache.value
 
@@ -15,7 +22,7 @@ export const getCurrentCompetitions = createServerFn({ method: 'GET' }).handler(
   if (!apiKey) return { ok: false, kind: 'configuration', message: 'Football data is not configured on this server.' }
 
   const url = new URL('https://v3.football.api-sports.io/leagues')
-  url.searchParams.set('current', 'true')
+  url.searchParams.set('season', '2024')
 
   try {
     const response = await fetch(url, { method: 'GET', headers: { 'x-apisports-key': apiKey } })
@@ -23,8 +30,9 @@ export const getCurrentCompetitions = createServerFn({ method: 'GET' }).handler(
     if (!response.ok) return { ok: false, kind: 'provider', message: `The football data service returned an error (${response.status}).` }
 
     const payload = (await response.json()) as { errors?: unknown[] | Record<string, unknown>; response?: Competition[] }
-    const hasErrors = Array.isArray(payload.errors) ? payload.errors.length > 0 : Boolean(payload.errors && Object.keys(payload.errors).length)
-    if (hasErrors || !Array.isArray(payload.response)) return { ok: false, kind: 'provider', message: 'The football data service could not complete this request.' }
+    const payloadError = apiFootballPayloadError(payload.errors)
+    if (payloadError) return { ok: false, ...payloadError }
+    if (!Array.isArray(payload.response)) return { ok: false, kind: 'provider', message: 'API-Football returned an invalid response.' }
 
     const value: CompetitionsResult = { ok: true, competitions: payload.response, fetchedAt: new Date().toISOString() }
     cache = { value, expiresAt: Date.now() + 60 * 60_000 }
