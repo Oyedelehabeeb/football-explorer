@@ -1,14 +1,16 @@
 import { createFileRoute } from '@tanstack/react-router'
+import { z } from 'zod'
+import { MatchdayExplorer } from '#/components/matchday-explorer'
+import { dateInTimezone } from '#/lib/football'
+import { getMatchday } from '#/server/fixtures'
 
-export const Route = createFileRoute('/')({ component: Home })
+const searchSchema = z.object({ date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), timezone: z.string().min(1).max(64).optional(), filter: z.enum(['all', 'live', 'upcoming', 'finished']).optional() })
 
-function Home() {
-  return (
-    <div className="p-8">
-      <h1 className="text-4xl font-bold">Welcome to TanStack Start</h1>
-      <p className="mt-4 text-lg">
-        Edit <code>src/routes/index.tsx</code> to get started.
-      </p>
-    </div>
-  )
-}
+export const Route = createFileRoute('/')({
+  validateSearch: searchSchema,
+  loaderDeps: ({ search }) => ({ date: search.date ?? dateInTimezone(new Date(), search.timezone ?? 'UTC'), timezone: search.timezone ?? 'UTC', filter: search.filter ?? 'all' }),
+  loader: async ({ deps }) => ({ ...deps, initialData: await getMatchday({ data: { date: deps.date, timezone: deps.timezone } }) }),
+  component: Home,
+})
+
+function Home() { return <MatchdayExplorer {...Route.useLoaderData()} /> }

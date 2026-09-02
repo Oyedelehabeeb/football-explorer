@@ -7,6 +7,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
+import { Search, SunMedium } from 'lucide-react'
 
 import appCss from '../styles.css?url'
 
@@ -27,7 +28,11 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'TanStack Start Starter',
+        title: 'Football Explorer — Every match, one clear view',
+      },
+      {
+        name: 'description',
+        content: 'Explore football fixtures, scores and match states across competitions.',
       },
     ],
     links: [
@@ -47,7 +52,16 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
+        <a className="skip-link" href="#fixtures-title">Skip to fixtures</a>
+        <header className="site-header">
+          <div className="page-shell header-inner">
+            <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>
+            <nav aria-label="Primary navigation"><a className="is-active" href="/">Matches</a><span>Competitions</span><span>Teams</span><span>Players</span></nav>
+            <div className="header-actions"><button aria-label="Search (coming soon)" disabled><Search aria-hidden="true" /></button><button aria-label="Theme selection (coming soon)" disabled><SunMedium aria-hidden="true" /></button></div>
+          </div>
+        </header>
         {children}
+        <footer className="site-footer"><div className="page-shell footer-inner"><span>Football Explorer</span><p>Football intelligence, without the noise.</p><span>Data provided by API-Football</span></div></footer>
         <TanStackDevtools
           config={{
             position: 'bottom-right',
