@@ -52,7 +52,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <HeadContent />
       </head>
       <body>
-        <a className="skip-link" href="#fixtures-title">Skip to fixtures</a>
+        <a className="skip-link" href="#main-content">Skip to content</a>
         <header className="site-header">
           <div className="page-shell header-inner">
             <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>

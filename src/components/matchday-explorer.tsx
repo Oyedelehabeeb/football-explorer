@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
-import { useNavigate } from '@tanstack/react-router'
+import { Link, useNavigate } from '@tanstack/react-router'
 import { CalendarDays, ChevronLeft, ChevronRight, Clock3, Radio, RefreshCw, Search, ShieldAlert, Trophy } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
@@ -38,16 +38,16 @@ function Team({ team }: { team: FixtureSummary['teams']['home'] }) {
   return <div className="team"><img src={team.logo} alt="" width={34} height={34} loading="lazy" /><span>{team.name}</span></div>
 }
 
-function MatchRow({ fixture }: { fixture: FixtureSummary }) {
+function MatchRow({ fixture, timezone }: { fixture: FixtureSummary; timezone: string }) {
   const live = isLiveStatus(fixture.fixture.status.short)
   const hasScore = fixture.goals.home !== null && fixture.goals.away !== null
   return (
-    <article className="match-row" aria-label={`${fixture.teams.home.name} versus ${fixture.teams.away.name}`}>
+    <Link className="match-row" to="/matches/$fixtureId" params={{ fixtureId: String(fixture.fixture.id) }} search={{ timezone }} aria-label={`${fixture.teams.home.name} versus ${fixture.teams.away.name}, view match details`}>
       <div className={`match-state ${live ? 'is-live' : ''}`}>{live && <span className="live-dot" aria-hidden="true" />}{statusLabel(fixture)}</div>
       <div className="match-teams"><Team team={fixture.teams.home} /><Team team={fixture.teams.away} /></div>
       <div className={`match-score ${hasScore ? '' : 'is-pending'}`} aria-label={hasScore ? 'Score' : 'Not started'}><span>{fixture.goals.home ?? '—'}</span><span>{fixture.goals.away ?? '—'}</span></div>
       <div className="match-meta"><span>{fixture.league.round ?? 'Round unavailable'}</span>{fixture.fixture.venue.name && <span>{fixture.fixture.venue.name}</span>}</div>
-    </article>
+    </Link>
   )
 }
 
@@ -104,7 +104,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
   }, [filtered.length, hasMore])
 
   return (
-    <main>
+    <main id="main-content">
       <section className="matchday-hero page-shell" aria-labelledby="matchday-title">
         <div className="hero-copy"><span className="eyebrow"><span /> The world game, in focus</span><h1 id="matchday-title">Every match.<br /><em>One clear view.</em></h1><p>Explore today’s football across competitions, with scores, match states and the context that matters.</p></div>
         <div className="hero-scoreboard" aria-label="Selected matchday summary">
@@ -126,7 +126,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
         </div>
         {query.isFetching && <div className="refresh-indicator"><RefreshCw aria-hidden="true" /> Updating scores</div>}
         {!result.ok ? <div className="error-state" role="alert"><ShieldAlert aria-hidden="true" /><div><h2>Match centre unavailable</h2><p>{result.message}</p></div><Button variant="outline" onClick={() => void query.refetch()}>Try again</Button></div>
-          : groups.length === 0 ? <EmptyState filter={filter} /> : <><div className="league-list">{groups.map((group) => <section className="league-group" key={group.key} aria-labelledby={`league-${group.league.id}`}><header><div className="league-identity"><img src={group.league.logo} alt="" width={42} height={42} loading="lazy" /><div><span>{group.league.country}</span><h3 id={`league-${group.league.id}`}>{group.league.name}</h3></div></div><span className="fixture-count"><Trophy aria-hidden="true" /> {group.fixtures.length} {group.fixtures.length === 1 ? 'fixture' : 'fixtures'}</span></header><div>{group.fixtures.map((fixture) => <MatchRow fixture={fixture} key={fixture.fixture.id} />)}</div></section>)}</div><div ref={loadMoreRef} className="match-load-sentinel" aria-live="polite">{hasMore ? <><RefreshCw aria-hidden="true" /> Loading more matches</> : `Showing all ${filtered.length} matches`}</div></>}
+          : groups.length === 0 ? <EmptyState filter={filter} /> : <><div className="league-list">{groups.map((group) => <section className="league-group" key={group.key} aria-labelledby={`league-${group.league.id}`}><header><div className="league-identity"><img src={group.league.logo} alt="" width={42} height={42} loading="lazy" /><div><span>{group.league.country}</span><h3 id={`league-${group.league.id}`}>{group.league.name}</h3></div></div><span className="fixture-count"><Trophy aria-hidden="true" /> {group.fixtures.length} {group.fixtures.length === 1 ? 'fixture' : 'fixtures'}</span></header><div>{group.fixtures.map((fixture) => <MatchRow fixture={fixture} timezone={timezone} key={fixture.fixture.id} />)}</div></section>)}</div><div ref={loadMoreRef} className="match-load-sentinel" aria-live="polite">{hasMore ? <><RefreshCw aria-hidden="true" /> Loading more matches</> : `Showing all ${filtered.length} matches`}</div></>}
       </section>
     </main>
   )
