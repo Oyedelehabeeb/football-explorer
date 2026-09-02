@@ -1,6 +1,7 @@
 import {
   HeadContent,
   Scripts,
+  Link,
   createRootRouteWithContext,
 } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
@@ -56,7 +57,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <header className="site-header">
           <div className="page-shell header-inner">
             <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>
-            <nav aria-label="Primary navigation"><a className="is-active" href="/">Matches</a><span>Competitions</span><span>Teams</span><span>Players</span></nav>
+            <nav aria-label="Primary navigation"><Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active' }}>Matches</Link><Link to="/competitions" activeProps={{ className: 'is-active' }}>Competitions</Link><span>Teams</span><span>Players</span></nav>
             <div className="header-actions"><button aria-label="Search (coming soon)" disabled><Search aria-hidden="true" /></button><button aria-label="Theme selection (coming soon)" disabled><SunMedium aria-hidden="true" /></button></div>
           </div>
         </header>

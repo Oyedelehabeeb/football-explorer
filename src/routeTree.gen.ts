@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as CompetitionsRouteImport } from './routes/competitions'
 import { Route as MatchesFixtureIdRouteImport } from './routes/matches.$fixtureId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CompetitionsRoute = CompetitionsRouteImport.update({
+  id: '/competitions',
+  path: '/competitions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MatchesFixtureIdRoute = MatchesFixtureIdRouteImport.update({
@@ -25,27 +31,31 @@ const MatchesFixtureIdRoute = MatchesFixtureIdRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/competitions': typeof CompetitionsRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/competitions': typeof CompetitionsRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/competitions': typeof CompetitionsRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/matches/$fixtureId'
+  fullPaths: '/' | '/competitions' | '/matches/$fixtureId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/matches/$fixtureId'
-  id: '__root__' | '/' | '/matches/$fixtureId'
+  to: '/' | '/competitions' | '/matches/$fixtureId'
+  id: '__root__' | '/' | '/competitions' | '/matches/$fixtureId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  CompetitionsRoute: typeof CompetitionsRoute
   MatchesFixtureIdRoute: typeof MatchesFixtureIdRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/competitions': {
+      id: '/competitions'
+      path: '/competitions'
+      fullPath: '/competitions'
+      preLoaderRoute: typeof CompetitionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/matches/$fixtureId': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  CompetitionsRoute: CompetitionsRoute,
   MatchesFixtureIdRoute: MatchesFixtureIdRoute,
 }
 export const routeTree = rootRouteImport
