@@ -14,6 +14,7 @@ import { Route as CompetitionsRouteImport } from './routes/competitions'
 import { Route as CompetitionsIndexRouteImport } from './routes/competitions.index'
 import { Route as CompetitionsLeagueIdRouteImport } from './routes/competitions.$leagueId'
 import { Route as MatchesFixtureIdRouteImport } from './routes/matches.$fixtureId'
+import { Route as TeamsTeamIdRouteImport } from './routes/teams.$teamId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,18 +41,25 @@ const MatchesFixtureIdRoute = MatchesFixtureIdRouteImport.update({
   path: '/matches/$fixtureId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamsTeamIdRoute = TeamsTeamIdRouteImport.update({
+  id: '/teams/$teamId',
+  path: '/teams/$teamId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/competitions': typeof CompetitionsRouteWithChildren
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
+  '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions/': typeof CompetitionsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
+  '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions': typeof CompetitionsIndexRoute
 }
 export interface FileRoutesById {
@@ -60,6 +68,7 @@ export interface FileRoutesById {
   '/competitions': typeof CompetitionsRouteWithChildren
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
+  '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions/': typeof CompetitionsIndexRoute
 }
 export interface FileRouteTypes {
@@ -69,15 +78,22 @@ export interface FileRouteTypes {
     | '/competitions'
     | '/competitions/$leagueId'
     | '/matches/$fixtureId'
+    | '/teams/$teamId'
     | '/competitions/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/competitions/$leagueId' | '/matches/$fixtureId' | '/competitions'
+  to:
+    | '/'
+    | '/competitions/$leagueId'
+    | '/matches/$fixtureId'
+    | '/teams/$teamId'
+    | '/competitions'
   id:
     | '__root__'
     | '/'
     | '/competitions'
     | '/competitions/$leagueId'
     | '/matches/$fixtureId'
+    | '/teams/$teamId'
     | '/competitions/'
   fileRoutesById: FileRoutesById
 }
@@ -85,6 +101,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CompetitionsRoute: typeof CompetitionsRouteWithChildren
   MatchesFixtureIdRoute: typeof MatchesFixtureIdRoute
+  TeamsTeamIdRoute: typeof TeamsTeamIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -124,6 +141,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof MatchesFixtureIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/teams/$teamId': {
+      id: '/teams/$teamId'
+      path: '/teams/$teamId'
+      fullPath: '/teams/$teamId'
+      preLoaderRoute: typeof TeamsTeamIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -145,6 +169,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CompetitionsRoute: CompetitionsRouteWithChildren,
   MatchesFixtureIdRoute: MatchesFixtureIdRoute,
+  TeamsTeamIdRoute: TeamsTeamIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

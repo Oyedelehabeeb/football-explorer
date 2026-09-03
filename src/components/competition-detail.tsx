@@ -26,8 +26,8 @@ function FixtureCard({ fixture }: { fixture: FixtureSummary }) {
   </Link>
 }
 
-function StandingsTable({ rows }: { rows: StandingRow[] }) {
-  return <div className="standings-scroll"><table className="competition-standings"><thead><tr><th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Form</th></tr></thead><tbody>{rows.map((row) => <tr key={row.team.id}><td><span className="standing-rank">{row.rank}</span></td><th scope="row"><img src={row.team.logo} alt="" /><span>{row.team.name}</span></th><td>{row.all.played}</td><td>{row.all.win}</td><td>{row.all.draw}</td><td>{row.all.lose}</td><td>{row.goalsDiff > 0 ? '+' : ''}{row.goalsDiff}</td><td><strong>{row.points}</strong></td><td><span className="standing-form">{row.form?.slice(-5) || '—'}</span></td></tr>)}</tbody></table></div>
+function StandingsTable({ rows, leagueId, season }: { rows: StandingRow[]; leagueId: number; season: number }) {
+  return <div className="standings-scroll"><table className="competition-standings"><thead><tr><th>#</th><th>Club</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GD</th><th>Pts</th><th>Form</th></tr></thead><tbody>{rows.map((row) => <tr key={row.team.id}><td><span className="standing-rank">{row.rank}</span></td><th scope="row"><Link className="standing-team-link" to="/teams/$teamId" params={{ teamId: String(row.team.id) }} search={{ league: leagueId, season }}><img src={row.team.logo} alt="" /><span>{row.team.name}</span></Link></th><td>{row.all.played}</td><td>{row.all.win}</td><td>{row.all.draw}</td><td>{row.all.lose}</td><td>{row.goalsDiff > 0 ? '+' : ''}{row.goalsDiff}</td><td><strong>{row.points}</strong></td><td><span className="standing-form">{row.form?.slice(-5) || '—'}</span></td></tr>)}</tbody></table></div>
 }
 
 export function CompetitionDetail({ result, timezone }: CompetitionDetailProps) {
@@ -53,7 +53,7 @@ export function CompetitionDetail({ result, timezone }: CompetitionDetailProps) 
     <div className="competition-detail-layout page-shell">
       <div className="competition-detail-main">
         <section className="competition-panel" aria-labelledby="standings-title"><header><div><span className="section-number">01 / TABLE</span><h2 id="standings-title">Standings</h2></div><small>{seasonLabel(season)}</small></header>
-          {standings.length ? standings.map((group, index) => <div key={group[0]?.group ?? index}>{standings.length > 1 && <h3 className="standing-group-title">{group[0]?.group}</h3>}<StandingsTable rows={group} /></div>) : <Unavailable label="Standings" unavailable={unavailable.includes('standings')} />}
+          {standings.length ? standings.map((group, index) => <div key={group[0]?.group ?? index}>{standings.length > 1 && <h3 className="standing-group-title">{group[0]?.group}</h3>}<StandingsTable rows={group} leagueId={competition.league.id} season={season} /></div>) : <Unavailable label="Standings" unavailable={unavailable.includes('standings')} />}
         </section>
 
         <section className="competition-panel" aria-labelledby="fixtures-title"><header><div><span className="section-number">02 / FIXTURES</span><h2 id="fixtures-title">Round fixtures</h2></div>{rounds.length > 0 && <Select value={selectedRound ?? undefined} onValueChange={(value) => updateSearch({ round: value })}><SelectTrigger aria-label="Select round" className="round-select"><SelectValue placeholder="Select round" /></SelectTrigger><SelectContent>{rounds.map((item) => <SelectItem key={item.round} value={item.round}>{item.round}</SelectItem>)}</SelectContent></Select>}</header>
@@ -61,7 +61,7 @@ export function CompetitionDetail({ result, timezone }: CompetitionDetailProps) 
         </section>
 
         <section className="competition-panel" aria-labelledby="clubs-title"><header><div><span className="section-number">03 / CLUBS</span><h2 id="clubs-title">Competing teams</h2></div><small>{teams.length} clubs</small></header>
-          {teams.length ? <div className="competition-team-grid">{teams.map(({ team, venue }) => <article key={team.id}><img src={team.logo} alt="" /><div><h3>{team.name}</h3><p><MapPin aria-hidden="true" />{venue.city ?? team.country}</p></div><span>{team.founded ?? '—'}</span></article>)}</div> : <Unavailable label="Teams" unavailable={unavailable.includes('teams')} />}
+          {teams.length ? <div className="competition-team-grid">{teams.map(({ team, venue }) => <Link key={team.id} to="/teams/$teamId" params={{ teamId: String(team.id) }} search={{ league: competition.league.id, season }}><img src={team.logo} alt="" /><div><h3>{team.name}</h3><p><MapPin aria-hidden="true" />{venue.city ?? team.country}</p></div><span>{team.founded ?? '—'}</span></Link>)}</div> : <Unavailable label="Teams" unavailable={unavailable.includes('teams')} />}
         </section>
       </div>
 

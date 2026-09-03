@@ -38,7 +38,7 @@ export interface StandingRow {
 
 export interface CompetitionTeam {
   team: { id: number; name: string; code: string | null; country: string; founded: number | null; national: boolean; logo: string }
-  venue: { id: number | null; name: string | null; city: string | null; capacity: number | null; surface: string | null; image: string | null }
+  venue: { id: number | null; name: string | null; address: string | null; city: string | null; capacity: number | null; surface: string | null; image: string | null }
 }
 
 export interface CompetitionRound { round: string; dates: string[] }

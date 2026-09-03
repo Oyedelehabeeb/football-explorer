@@ -10,6 +10,15 @@ import type { FixtureSummary } from '#/lib/football'
 const inputSchema = z.object({ leagueId: z.number().int().positive(), season: z.number().int().min(1900).max(2200), round: z.string().max(100).optional(), timezone: z.string().min(1).max(64) })
 const responseCache = new Map<string, { expiresAt: number; value: unknown[] }>()
 
+export function findCachedCompetitionTeam(leagueId: number, season: number, teamId: number) {
+  const url = new URL('https://v3.football.api-sports.io/teams')
+  url.searchParams.set('league', String(leagueId))
+  url.searchParams.set('season', String(season))
+  const cached = responseCache.get(url.toString())
+  if (!cached || cached.expiresAt <= Date.now()) return undefined
+  return (cached.value as CompetitionTeam[]).find((item) => item.team.id === teamId)
+}
+
 export type CompetitionDetailResult =
   | { ok: true; competition: Competition; season: number; standings: StandingRow[][]; teams: CompetitionTeam[]; rounds: CompetitionRound[]; selectedRound: string | null; fixtures: FixtureSummary[]; unavailable: string[] }
   | { ok: false; kind: 'configuration' | 'not-found' | 'rate-limit' | 'provider' | 'network'; message: string }
