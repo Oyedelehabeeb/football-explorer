@@ -456,12 +456,13 @@ img { display: block; object-fit: contain; }
 .squad-group { min-width: 0; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .squad-group:nth-child(even) { border-right: 0; }
 .squad-group > header { padding: 12px 17px; display: flex; justify-content: space-between; color: var(--muted); background: #fdfcf9; border-bottom: 1px solid var(--line); font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .08em; }
-.squad-group article { min-height: 62px; padding: 8px 14px; display: grid; grid-template-columns: 38px minmax(0,1fr) 25px; align-items: center; gap: 10px; border-bottom: 1px solid #eceae4; }
-.squad-group article:last-child { border-bottom: 0; }
-.squad-group article img { width: 36px; height: 36px; border-radius: 50%; background: var(--soft); }
+.squad-group > div > a { min-height: 62px; padding: 8px 14px; display: grid; grid-template-columns: 38px minmax(0,1fr) 25px; align-items: center; gap: 10px; color: inherit; text-decoration: none; border-bottom: 1px solid #eceae4; }
+.squad-group > div > a:hover { background: #fdfaf7; }
+.squad-group > div > a:last-child { border-bottom: 0; }
+.squad-group > div > a img { width: 36px; height: 36px; border-radius: 50%; background: var(--soft); }
 .squad-group h3 { overflow: hidden; margin: 0; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .squad-group p { color: var(--muted); margin: 2px 0 0; font-size: 8px; }
-.squad-group article > strong { color: #aaa79e; font-family: 'Space Grotesk'; font-size: 11px; text-align: right; }
+.squad-group > div > a > strong { color: #aaa79e; font-family: 'Space Grotesk'; font-size: 11px; text-align: right; }
 .team-detail-sidebar { position: sticky; top: 24px; display: grid; gap: 16px; }
 .team-detail-sidebar > section { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--paper); }
 .team-venue-card > img { width: 100%; height: 150px; object-fit: cover; background: var(--soft); }
@@ -479,6 +480,68 @@ img { display: block; object-fit: contain; }
 .team-data-note { padding: 18px; display: flex; align-items: flex-start; gap: 10px; background: transparent !important; }
 .team-data-note > svg { flex: none; }
 .team-data-note p { color: var(--muted); margin: 0; font-size: 9px; line-height: 1.5; }
+
+/* Player discovery and detail */
+.players-page, .player-detail-page { min-height: 70vh; }
+.players-hero { color: white; background: var(--black); }
+.players-hero .page-shell { padding-block: 66px 72px; }
+.players-hero h1 { max-width: 800px; margin: 15px 0; font-family: 'Space Grotesk'; font-size: clamp(48px,7vw,82px); line-height: .94; letter-spacing: -.065em; }
+.players-hero h1 em { color: var(--orange); font-style: normal; }
+.players-hero p { max-width: 560px; color: #aaa9a4; line-height: 1.6; }
+.player-search { width: min(620px,100%); height: 58px; margin-top: 32px; padding-inline: 18px; display: flex; align-items: center; gap: 12px; border-radius: 12px; background: white; }
+.player-search svg { width: 20px; color: var(--orange); }
+.player-search input { height: 100%; padding: 0; color: var(--ink); border: 0; box-shadow: none; }
+.players-hero small { display: block; margin-top: 10px; color: #77766f; font-size: 9px; }
+.player-directory { padding-block: 52px 100px; }
+.player-directory > header, .player-section > header { margin-bottom: 24px; display: flex; justify-content: space-between; align-items: end; gap: 20px; }
+.player-directory h2, .player-section > header h2 { margin: 5px 0 0; font-family: 'Space Grotesk'; font-size: 28px; letter-spacing: -.04em; }
+.player-directory > header p, .player-section > header p { color: var(--muted); margin: 0; font-size: 10px; }
+.player-search-prompt { min-height: 270px; display: grid; place-items: center; align-content: center; text-align: center; border: 1px dashed #d8d5cd; border-radius: 16px; }
+.player-search-prompt svg { width: 35px; color: var(--orange); }
+.player-search-prompt h3 { margin: 13px 0 5px; font-family: 'Space Grotesk'; font-size: 18px; }
+.player-search-prompt p { max-width: 430px; color: var(--muted); margin: 0; font-size: 10px; line-height: 1.55; }
+.player-result-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+.player-result-card { min-height: 112px; padding: 13px; display: grid; grid-template-columns: 72px minmax(0,1fr) 28px; align-items: center; gap: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); transition: transform .2s ease, border-color .2s ease; }
+.player-result-card:hover { transform: translateY(-2px); border-color: #efb49e; }
+.player-result-card > img { width: 72px; height: 84px; object-fit: cover; object-position: top; border-radius: 9px; background: var(--soft); }
+.player-result-card > div { min-width: 0; }
+.player-result-card span { color: var(--orange-dark); font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; }
+.player-result-card h3 { overflow: hidden; margin: 5px 0 4px; font-family: 'Space Grotesk'; font-size: 14px; text-overflow: ellipsis; white-space: nowrap; }
+.player-result-card p { overflow: hidden; color: var(--muted); margin: 0; font-size: 8px; text-overflow: ellipsis; white-space: nowrap; }
+.player-result-card > strong { color: #aaa79e; font-family: 'Space Grotesk'; text-align: center; }
+.player-profile-hero { overflow: hidden; color: white; background: var(--black); }
+.player-profile-hero .page-shell { padding-block: 30px 0; }
+.player-profile-grid { min-height: 310px; display: grid; grid-template-columns: 230px minmax(0,1fr) 250px; align-items: end; gap: 34px; }
+.player-portrait { align-self: stretch; display: flex; align-items: end; }
+.player-portrait img { width: 100%; max-height: 285px; object-fit: contain; object-position: bottom; filter: drop-shadow(0 18px 22px rgba(0,0,0,.32)); }
+.player-profile-copy { align-self: center; }
+.player-profile-copy > span { color: #aaa9a4; font-size: 9px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+.player-profile-copy h1 { margin: 10px 0 16px; font-family: 'Space Grotesk'; font-size: clamp(45px,6vw,76px); line-height: .86; letter-spacing: -.065em; }
+.player-profile-copy h1 em { color: var(--orange); font-style: normal; }
+.player-profile-copy p { display: flex; align-items: center; gap: 9px; color: #bbb9b2; margin: 0; }
+.player-profile-copy p img { width: 27px; height: 27px; }
+.player-profile-facts { align-self: center; display: grid; grid-template-columns: 1fr 1fr; border: 1px solid #373731; border-radius: 14px; overflow: hidden; }
+.player-profile-facts > div { min-height: 78px; padding: 15px; display: grid; align-content: center; gap: 4px; border-right: 1px solid #373731; border-bottom: 1px solid #373731; }
+.player-profile-facts > div:nth-child(even) { border-right: 0; }.player-profile-facts > div:nth-last-child(-n+2) { border-bottom: 0; }
+.player-profile-facts span { color: #85847e; font-size: 8px; text-transform: uppercase; letter-spacing: .09em; }
+.player-profile-facts strong { font-family: 'Space Grotesk'; font-size: 16px; }
+.player-season-select { min-height: 70px; display: flex; align-items: center; gap: 14px; border-top: 1px solid #373731; }
+.player-season-select > span { color: #85847e; font-size: 8px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; }
+.player-season-select [data-slot='select-trigger'] { width: 190px; color: white; border-color: #44443e; background: #252521; }
+.player-detail-body { display: grid; gap: 60px; padding-block: 54px 100px; }
+.player-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 13px; }
+.player-stat-card { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--paper); }
+.player-stat-card > header { min-height: 78px; padding: 14px 17px; display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 12px; border-bottom: 1px solid var(--line); background: #faf9f6; }
+.player-stat-card > header img { width: 38px; height: 38px; }.player-stat-card > header span { color: var(--muted); font-size: 8px; text-transform: uppercase; }.player-stat-card h3 { margin: 3px 0 0; font-family: 'Space Grotesk'; font-size: 14px; }
+.player-stat-card > header > strong { color: var(--orange-dark); font-family: 'Space Grotesk'; font-size: 19px; text-align: right; }.player-stat-card > header > strong small { display: block; color: var(--muted); font-family: inherit; font-size: 7px; text-transform: uppercase; }
+.player-stat-card > div { padding: 16px; }.player-stat-card dl { margin: 0; display: grid; grid-template-columns: repeat(3,1fr); gap: 1px; background: var(--line); }
+.player-stat-card dl > div { min-height: 64px; padding: 10px; display: grid; align-content: center; gap: 3px; background: white; }.player-stat-card dt { color: var(--muted); font-size: 7px; text-transform: uppercase; }.player-stat-card dd { margin: 0; font-family: 'Space Grotesk'; font-size: 17px; }
+.player-stat-card > div > a { margin-top: 13px; display: inline-flex; align-items: center; gap: 7px; color: inherit; font-size: 9px; font-weight: 700; text-decoration: none; }.player-stat-card > div > a img { width: 20px; height: 20px; }
+.career-team-list { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }.career-team-list > a { min-height: 88px; padding: 14px; display: grid; grid-template-columns: 42px 1fr auto; align-items: center; gap: 10px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 12px; background: var(--paper); }.career-team-list img { width: 38px; height: 38px; }.career-team-list h3 { margin: 0; font-family: 'Space Grotesk'; font-size: 12px; }.career-team-list p { color: var(--muted); margin: 4px 0 0; font-size: 8px; }.career-team-list > a > span { width: 24px; height: 24px; display: grid; place-items: center; border-radius: 50%; color: var(--orange-dark); background: #fff0e9; font-size: 8px; font-weight: 700; }
+.load-player-history { min-height: 90px; width: 100%; display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--ink); border: 1px dashed #d8d5cd; border-radius: 14px; background: transparent; font-size: 10px; font-weight: 700; cursor: pointer; }.load-player-history svg { width: 17px; color: var(--orange); }
+.player-history-grid { display: grid; grid-template-columns: 1.1fr 1fr 1fr; gap: 12px; }.player-history-grid > section { overflow: hidden; border: 1px solid var(--line); border-radius: 14px; background: var(--paper); }.player-history-grid > section > header { padding: 15px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid var(--line); background: #faf9f6; }.player-history-grid header svg { width: 20px; color: var(--orange); }.player-history-grid header span { color: var(--muted); font-size: 7px; text-transform: uppercase; }.player-history-grid header h3 { margin: 3px 0 0; font-family: 'Space Grotesk'; font-size: 12px; }
+.trophy-list, .sidelined-list, .transfer-list { max-height: 350px; overflow-y: auto; }.trophy-list > div, .sidelined-list > div, .transfer-list > div { min-height: 58px; padding: 10px 13px; border-bottom: 1px solid #eceae4; }.trophy-list > div { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 8px; }.trophy-list svg { width: 16px; color: #c79a18; }.trophy-list strong, .sidelined-list strong, .transfer-list strong { display: block; font-size: 9px; }.trophy-list span, .sidelined-list span, .transfer-list span, .transfer-list small { color: var(--muted); font-size: 7px; }.trophy-list b { color: var(--orange-dark); font-size: 7px; text-transform: uppercase; }
+.sidelined-list > div { display: flex; align-items: center; gap: 10px; }.sidelined-list i { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--orange); }.transfer-list > div { display: grid; gap: 4px; }.player-history-empty { color: var(--muted); margin: 0; padding: 30px 16px; font-size: 9px; text-align: center; }
 
 @media (max-width: 800px) {
   .page-shell { width: min(100% - 28px, 660px); }
@@ -563,6 +626,20 @@ img { display: block; object-fit: contain; }
   .team-data-note { display: none !important; }
   .performance-primary, .team-fixture-columns, .squad-groups { grid-template-columns: 1fr; }
   .team-fixture-columns > section:first-child, .squad-group { border-right: 0; }
+  .players-hero .page-shell { padding-block: 46px 52px; }
+  .players-hero h1 { font-size: clamp(43px,13vw,64px); }
+  .player-directory > header, .player-section > header { align-items: flex-start; flex-direction: column; }
+  .player-result-grid { grid-template-columns: 1fr; }
+  .player-profile-grid { grid-template-columns: 95px 1fr; min-height: 245px; gap: 15px; }
+  .player-portrait img { max-height: 190px; }
+  .player-profile-copy h1 { font-size: clamp(36px,11vw,52px); }
+  .player-profile-copy p { font-size: 10px; }
+  .player-profile-facts { grid-column: 1 / -1; width: 100%; grid-template-columns: repeat(4,1fr); }
+  .player-profile-facts > div { min-height: 60px; padding: 9px; border-bottom: 0; }
+  .player-profile-facts > div:nth-child(2) { border-right: 1px solid #373731; }
+  .player-profile-facts strong { font-size: 12px; }
+  .player-stat-grid, .player-history-grid { grid-template-columns: 1fr; }
+  .career-team-list { grid-template-columns: 1fr 1fr; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
