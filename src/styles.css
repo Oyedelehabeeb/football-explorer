@@ -105,6 +105,10 @@ img { display: block; object-fit: contain; }
 .filter-bar > button svg { width: 14px; }
 .filter-bar > button > span { min-width: 18px; height: 18px; padding-inline: 5px; border-radius: 9px; display: grid; place-items: center; font-size: 10px; background: #fbded3; color: var(--orange-dark); }
 .filter-bar > button.is-active { color: white; background: var(--black); }
+.filter-bar > button.score-refresh { color: white; background: var(--orange); }
+.filter-bar > button.score-refresh:disabled { opacity: .65; cursor: wait; }
+.filter-bar > button.score-refresh svg { transition: transform .2s ease; }
+.filter-bar > button.score-refresh:disabled svg { animation: spin 1s linear infinite; }
 .timezone-select { margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: var(--muted); }
 .timezone-select svg { width: 15px; }
 .timezone-select select { max-width: 165px; border: 0; outline: none; color: var(--muted); background: transparent; font-size: 12px; }

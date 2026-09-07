@@ -7,6 +7,7 @@ import { Button } from '#/components/ui/button'
 import { Calendar } from '#/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
 import { dateInTimezone, groupFixtures, isFinishedStatus, isLiveStatus, matchesFilter, offsetDate } from '#/lib/football'
+import { compareLeaguePriority } from '#/lib/league-priority'
 import { getMatchday } from '#/server/fixtures'
 import type { FixtureSummary, MatchFilter } from '#/lib/football'
 import type { MatchdayResult } from '#/server/fixtures'
@@ -60,12 +61,18 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
   const [calendarOpen, setCalendarOpen] = useState(false)
   const [visibleCount, setVisibleCount] = useState(MATCHES_PER_PAGE)
   const loadMoreRef = useRef<HTMLDivElement>(null)
+  const refreshRequestedRef = useRef(false)
   const query = useQuery({
-    queryKey: ['matchday', date, timezone], queryFn: () => getMatchday({ data: { date, timezone } }), initialData,
-    refetchInterval: (state) => {
-      const value = state.state.data
-      return value?.ok && value.fixtures.some((fixture) => isLiveStatus(fixture.fixture.status.short)) ? 60_000 : false
+    queryKey: ['matchday', date, timezone],
+    queryFn: () => {
+      const refresh = refreshRequestedRef.current
+      refreshRequestedRef.current = false
+      return getMatchday({ data: { date, timezone, refresh } })
     },
+    initialData,
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
+    refetchOnReconnect: false,
   })
 
   useEffect(() => {
@@ -75,7 +82,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
 
   const result = query.data
   const fixtures = result.ok ? result.fixtures : []
-  const filtered = useMemo(() => fixtures.filter((fixture) => matchesFilter(fixture, filter)), [fixtures, filter])
+  const filtered = useMemo(() => fixtures.filter((fixture) => matchesFilter(fixture, filter)).map((fixture, index) => ({ fixture, index })).sort((a, b) => compareLeaguePriority(a.fixture.league.id, b.fixture.league.id) || a.index - b.index).map(({ fixture }) => fixture), [fixtures, filter])
   const visibleFixtures = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
   const groups = useMemo(() => groupFixtures(visibleFixtures), [visibleFixtures])
   const hasMore = visibleCount < filtered.length
@@ -83,6 +90,10 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
   const finishedCount = fixtures.filter((fixture) => isFinishedStatus(fixture.fixture.status.short)).length
   const setSearch = (next: { date?: string; filter?: MatchFilter; timezone?: string }) => void navigate({ search: { date: next.date ?? date, timezone: next.timezone ?? timezone, filter: next.filter ?? filter } })
   const dateTitle = new Intl.DateTimeFormat('en', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T12:00:00Z`))
+  const refreshScores = () => {
+    refreshRequestedRef.current = true
+    void query.refetch()
+  }
 
   useEffect(() => setVisibleCount(MATCHES_PER_PAGE), [date, timezone, filter])
 
@@ -122,7 +133,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
 
         <div className="filter-bar" role="group" aria-label="Filter matches by status">
           {FILTERS.map((item) => <button key={item.value} className={filter === item.value ? 'is-active' : ''} onClick={() => setSearch({ filter: item.value })}>{item.value === 'live' && <Radio aria-hidden="true" />}{item.label}{item.value === 'live' && liveCount > 0 && <span>{liveCount}</span>}</button>)}
-          <label className="timezone-select"><Clock3 aria-hidden="true" /><span className="sr-only">Timezone</span><select value={timezone} onChange={(event) => setSearch({ timezone: event.target.value })}><option value={timezone}>{timezone.replaceAll('_', ' ')}</option>{timezone !== 'UTC' && <option value="UTC">UTC</option>}</select></label>
+          <label className="timezone-select"><Clock3 aria-hidden="true" /><span className="sr-only">Timezone</span><select value={timezone} onChange={(event) => setSearch({ timezone: event.target.value })}><option value={timezone}>{timezone.replaceAll('_', ' ')}</option>{timezone !== 'UTC' && <option value="UTC">UTC</option>}</select></label><button className="score-refresh" onClick={refreshScores} disabled={query.isFetching}><RefreshCw aria-hidden="true" />{query.isFetching ? 'Refreshing' : 'Refresh scores'}</button>
         </div>
         {query.isFetching && <div className="refresh-indicator"><RefreshCw aria-hidden="true" /> Updating scores</div>}
         {!result.ok ? <div className="error-state" role="alert"><ShieldAlert aria-hidden="true" /><div><h2>Match centre unavailable</h2><p>{result.message}</p></div><Button variant="outline" onClick={() => void query.refetch()}>Try again</Button></div>

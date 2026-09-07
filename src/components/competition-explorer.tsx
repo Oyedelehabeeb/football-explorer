@@ -5,6 +5,7 @@ import { CalendarRange, Database, Flag, RefreshCw, Search, ShieldAlert, Trophy }
 import { Input } from '#/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '#/components/ui/select'
 import { coverageCount, currentSeason } from '#/lib/competition'
+import { compareLeaguePriority } from '#/lib/league-priority'
 
 import type { CompetitionFilter } from '#/lib/competition'
 import type { CompetitionsResult } from '#/server/competitions'
@@ -34,7 +35,7 @@ export function CompetitionExplorer({ result, search }: CompetitionExplorerProps
       if (country !== 'all' && item.country.name !== country) return false
       if (type !== 'all' && item.league.type.toLocaleLowerCase() !== type) return false
       return !needle || item.league.name.toLocaleLowerCase().includes(needle) || item.country.name.toLocaleLowerCase().includes(needle)
-    }).sort((a, b) => (currentSeason(b)?.year ?? 0) - (currentSeason(a)?.year ?? 0) || a.country.name.localeCompare(b.country.name) || a.league.name.localeCompare(b.league.name))
+    }).sort((a, b) => compareLeaguePriority(a.league.id, b.league.id) || (currentSeason(b)?.year ?? 0) - (currentSeason(a)?.year ?? 0) || a.country.name.localeCompare(b.country.name) || a.league.name.localeCompare(b.league.name))
   }, [competitions, country, query, type])
   const visible = filtered.slice(0, visibleCount)
   const hasMore = visibleCount < filtered.length

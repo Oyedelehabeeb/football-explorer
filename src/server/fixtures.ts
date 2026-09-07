@@ -9,6 +9,7 @@ import type { FixtureSummary } from '#/lib/football'
 const inputSchema = z.object({
   date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
   timezone: z.string().min(1).max(64),
+  refresh: z.boolean().optional(),
 })
 
 const cache = new Map<
@@ -54,7 +55,7 @@ export const getMatchday = createServerFn({ method: 'GET' })
   .handler(async ({ data }): Promise<MatchdayResult> => {
     const cacheKey = `${data.date}:${data.timezone}`
     const cached = cache.get(cacheKey)
-    if (cached && cached.expiresAt > Date.now()) return cached.value
+    if (!data.refresh && cached && cached.expiresAt > Date.now()) return cached.value
 
     const apiKey = process.env.API_FOOTBALL_KEY
     if (!apiKey) {
