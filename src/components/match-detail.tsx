@@ -2,6 +2,7 @@ import { Link } from '@tanstack/react-router'
 import { Activity, ArrowLeft, CalendarDays, Clock3, MapPin, ShieldAlert, Shirt, Trophy, UserRound } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
+import { HeadToHead } from '#/components/head-to-head'
 import { isLiveStatus } from '#/lib/football'
 
 import type { FixtureDetail, FixtureEvent, FixtureLineup, FixturePlayerStatistics } from '#/lib/match'
@@ -107,7 +108,8 @@ export function MatchDetail({ result, timezone }: MatchDetailProps) {
       <section className="match-section"><header><span>01</span><div><small>Match story</small><h2>Events</h2></div></header><EventTimeline match={match} /></section>
       <section className="match-section"><header><span>02</span><div><small>On the pitch</small><h2>Lineups</h2></div></header>{match.lineups.length ? <div className="lineup-grid">{match.lineups.map((lineup) => <LineupCard lineup={lineup} key={lineup.team.id} />)}</div> : <Unavailable title="Lineups unavailable" copy="Lineups have not been published for this fixture." />}</section>
       <section className="match-section"><header><span>03</span><div><small>Match data</small><h2>Team statistics</h2></div></header><TeamStatistics match={match} /></section>
-      <section className="match-section"><header><span>04</span><div><small>Individual performance</small><h2>Player statistics</h2></div></header>{match.players.length ? <div className="player-stats-grid">{match.players.map((team) => <PlayerTeam team={team} key={team.team.id} />)}</div> : <Unavailable title="Player statistics unavailable" copy="Individual performance data was not supplied for this fixture." />}</section>
+      <section className="match-section"><header><span>04</span><div><small>The rivalry</small><h2>Head-to-head</h2></div></header><HeadToHead home={match.teams.home} away={match.teams.away} timezone={timezone} /></section>
+      <section className="match-section"><header><span>05</span><div><small>Individual performance</small><h2>Player statistics</h2></div></header>{match.players.length ? <div className="player-stats-grid">{match.players.map((team) => <PlayerTeam team={team} key={team.team.id} />)}</div> : <Unavailable title="Player statistics unavailable" copy="Individual performance data was not supplied for this fixture." />}</section>
     </div><aside className="match-sidebar"><div className="match-summary-card"><span>Match summary</span><ScoreBreakdown match={match} /></div><div className="match-coverage-card"><Trophy aria-hidden="true" /><strong>Available coverage</strong><ul><li className={match.events.length ? 'is-available' : ''}>Events</li><li className={match.lineups.length ? 'is-available' : ''}>Lineups</li><li className={match.statistics.length ? 'is-available' : ''}>Team statistics</li><li className={match.players.length ? 'is-available' : ''}>Player statistics</li></ul></div><div className="match-note"><Shirt aria-hidden="true" /><p>Coverage varies by competition and fixture. Unavailable sections are shown explicitly.</p></div></aside></div>
   </main>
 }
