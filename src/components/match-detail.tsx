@@ -3,6 +3,7 @@ import { Activity, ArrowLeft, CalendarDays, Clock3, MapPin, ShieldAlert, Shirt, 
 
 import { Button } from '#/components/ui/button'
 import { HeadToHead } from '#/components/head-to-head'
+import { MatchAvailability } from '#/components/match-availability'
 import { MatchOutlook } from '#/components/match-outlook'
 import { FIXTURE_STATUS, isLiveStatus } from '#/lib/football'
 
@@ -111,8 +112,9 @@ export function MatchDetail({ result, timezone }: MatchDetailProps) {
       <section className="match-section"><header><span>02</span><div><small>On the pitch</small><h2>Lineups</h2></div></header>{match.lineups.length ? <div className="lineup-grid">{match.lineups.map((lineup) => <LineupCard lineup={lineup} key={lineup.team.id} />)}</div> : <Unavailable title="Lineups unavailable" copy="Lineups have not been published for this fixture." />}</section>
       <section className="match-section"><header><span>03</span><div><small>Match data</small><h2>Team statistics</h2></div></header><TeamStatistics match={match} /></section>
       {isScheduled && <section className="match-section"><header><span>04</span><div><small>Pre-match intelligence</small><h2>Match outlook</h2></div></header><MatchOutlook fixtureId={match.fixture.id} homeName={match.teams.home.name} awayName={match.teams.away.name} /></section>}
-      <section className="match-section"><header><span>{isScheduled ? '05' : '04'}</span><div><small>The rivalry</small><h2>Head-to-head</h2></div></header><HeadToHead home={match.teams.home} away={match.teams.away} timezone={timezone} /></section>
-      <section className="match-section"><header><span>{isScheduled ? '06' : '05'}</span><div><small>Individual performance</small><h2>Player statistics</h2></div></header>{match.players.length ? <div className="player-stats-grid">{match.players.map((team) => <PlayerTeam team={team} key={team.team.id} />)}</div> : <Unavailable title="Player statistics unavailable" copy="Individual performance data was not supplied for this fixture." />}</section>
+      {isScheduled && <section className="match-section"><header><span>05</span><div><small>Selection watch</small><h2>Team availability</h2></div></header><MatchAvailability fixtureId={match.fixture.id} home={match.teams.home} away={match.teams.away} season={match.league.season} /></section>}
+      <section className="match-section"><header><span>{isScheduled ? '06' : '04'}</span><div><small>The rivalry</small><h2>Head-to-head</h2></div></header><HeadToHead home={match.teams.home} away={match.teams.away} timezone={timezone} /></section>
+      <section className="match-section"><header><span>{isScheduled ? '07' : '05'}</span><div><small>Individual performance</small><h2>Player statistics</h2></div></header>{match.players.length ? <div className="player-stats-grid">{match.players.map((team) => <PlayerTeam team={team} key={team.team.id} />)}</div> : <Unavailable title="Player statistics unavailable" copy="Individual performance data was not supplied for this fixture." />}</section>
     </div><aside className="match-sidebar"><div className="match-summary-card"><span>Match summary</span><ScoreBreakdown match={match} /></div><div className="match-coverage-card"><Trophy aria-hidden="true" /><strong>Available coverage</strong><ul><li className={match.events.length ? 'is-available' : ''}>Events</li><li className={match.lineups.length ? 'is-available' : ''}>Lineups</li><li className={match.statistics.length ? 'is-available' : ''}>Team statistics</li><li className={match.players.length ? 'is-available' : ''}>Player statistics</li></ul></div><div className="match-note"><Shirt aria-hidden="true" /><p>Coverage varies by competition and fixture. Unavailable sections are shown explicitly.</p></div></aside></div>
   </main>
 }
