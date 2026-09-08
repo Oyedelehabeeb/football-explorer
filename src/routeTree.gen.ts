@@ -11,10 +11,13 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CompetitionsRouteImport } from './routes/competitions'
+import { Route as CountriesRouteImport } from './routes/countries'
 import { Route as PlayersRouteImport } from './routes/players'
 import { Route as TeamsRouteImport } from './routes/teams'
 import { Route as CompetitionsIndexRouteImport } from './routes/competitions.index'
 import { Route as CompetitionsLeagueIdRouteImport } from './routes/competitions.$leagueId'
+import { Route as CountriesIndexRouteImport } from './routes/countries.index'
+import { Route as CountriesCountryNameRouteImport } from './routes/countries.$countryName'
 import { Route as MatchesFixtureIdRouteImport } from './routes/matches.$fixtureId'
 import { Route as PlayersIndexRouteImport } from './routes/players.index'
 import { Route as PlayersPlayerIdRouteImport } from './routes/players.$playerId'
@@ -29,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 const CompetitionsRoute = CompetitionsRouteImport.update({
   id: '/competitions',
   path: '/competitions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CountriesRoute = CountriesRouteImport.update({
+  id: '/countries',
+  path: '/countries',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlayersRoute = PlayersRouteImport.update({
@@ -50,6 +58,16 @@ const CompetitionsLeagueIdRoute = CompetitionsLeagueIdRouteImport.update({
   id: '/$leagueId',
   path: '/$leagueId',
   getParentRoute: () => CompetitionsRoute,
+} as any)
+const CountriesIndexRoute = CountriesIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => CountriesRoute,
+} as any)
+const CountriesCountryNameRoute = CountriesCountryNameRouteImport.update({
+  id: '/$countryName',
+  path: '/$countryName',
+  getParentRoute: () => CountriesRoute,
 } as any)
 const MatchesFixtureIdRoute = MatchesFixtureIdRouteImport.update({
   id: '/matches/$fixtureId',
@@ -80,23 +98,28 @@ const TeamsTeamIdRoute = TeamsTeamIdRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/competitions': typeof CompetitionsRouteWithChildren
+  '/countries': typeof CountriesRouteWithChildren
   '/players': typeof PlayersRouteWithChildren
   '/teams': typeof TeamsRouteWithChildren
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
+  '/countries/$countryName': typeof CountriesCountryNameRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
   '/players/$playerId': typeof PlayersPlayerIdRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions/': typeof CompetitionsIndexRoute
+  '/countries/': typeof CountriesIndexRoute
   '/players/': typeof PlayersIndexRoute
   '/teams/': typeof TeamsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
+  '/countries/$countryName': typeof CountriesCountryNameRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
   '/players/$playerId': typeof PlayersPlayerIdRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions': typeof CompetitionsIndexRoute
+  '/countries': typeof CountriesIndexRoute
   '/players': typeof PlayersIndexRoute
   '/teams': typeof TeamsIndexRoute
 }
@@ -104,13 +127,16 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/competitions': typeof CompetitionsRouteWithChildren
+  '/countries': typeof CountriesRouteWithChildren
   '/players': typeof PlayersRouteWithChildren
   '/teams': typeof TeamsRouteWithChildren
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
+  '/countries/$countryName': typeof CountriesCountryNameRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
   '/players/$playerId': typeof PlayersPlayerIdRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions/': typeof CompetitionsIndexRoute
+  '/countries/': typeof CountriesIndexRoute
   '/players/': typeof PlayersIndexRoute
   '/teams/': typeof TeamsIndexRoute
 }
@@ -119,36 +145,44 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/competitions'
+    | '/countries'
     | '/players'
     | '/teams'
     | '/competitions/$leagueId'
+    | '/countries/$countryName'
     | '/matches/$fixtureId'
     | '/players/$playerId'
     | '/teams/$teamId'
     | '/competitions/'
+    | '/countries/'
     | '/players/'
     | '/teams/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/competitions/$leagueId'
+    | '/countries/$countryName'
     | '/matches/$fixtureId'
     | '/players/$playerId'
     | '/teams/$teamId'
     | '/competitions'
+    | '/countries'
     | '/players'
     | '/teams'
   id:
     | '__root__'
     | '/'
     | '/competitions'
+    | '/countries'
     | '/players'
     | '/teams'
     | '/competitions/$leagueId'
+    | '/countries/$countryName'
     | '/matches/$fixtureId'
     | '/players/$playerId'
     | '/teams/$teamId'
     | '/competitions/'
+    | '/countries/'
     | '/players/'
     | '/teams/'
   fileRoutesById: FileRoutesById
@@ -156,6 +190,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CompetitionsRoute: typeof CompetitionsRouteWithChildren
+  CountriesRoute: typeof CountriesRouteWithChildren
   PlayersRoute: typeof PlayersRouteWithChildren
   TeamsRoute: typeof TeamsRouteWithChildren
   MatchesFixtureIdRoute: typeof MatchesFixtureIdRoute
@@ -175,6 +210,13 @@ declare module '@tanstack/react-router' {
       path: '/competitions'
       fullPath: '/competitions'
       preLoaderRoute: typeof CompetitionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/countries': {
+      id: '/countries'
+      path: '/countries'
+      fullPath: '/countries'
+      preLoaderRoute: typeof CountriesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/players': {
@@ -204,6 +246,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/competitions/$leagueId'
       preLoaderRoute: typeof CompetitionsLeagueIdRouteImport
       parentRoute: typeof CompetitionsRoute
+    }
+    '/countries/': {
+      id: '/countries/'
+      path: '/'
+      fullPath: '/countries/'
+      preLoaderRoute: typeof CountriesIndexRouteImport
+      parentRoute: typeof CountriesRoute
+    }
+    '/countries/$countryName': {
+      id: '/countries/$countryName'
+      path: '/$countryName'
+      fullPath: '/countries/$countryName'
+      preLoaderRoute: typeof CountriesCountryNameRouteImport
+      parentRoute: typeof CountriesRoute
     }
     '/matches/$fixtureId': {
       id: '/matches/$fixtureId'
@@ -257,6 +313,20 @@ const CompetitionsRouteWithChildren = CompetitionsRoute._addFileChildren(
   CompetitionsRouteChildren,
 )
 
+interface CountriesRouteChildren {
+  CountriesCountryNameRoute: typeof CountriesCountryNameRoute
+  CountriesIndexRoute: typeof CountriesIndexRoute
+}
+
+const CountriesRouteChildren: CountriesRouteChildren = {
+  CountriesCountryNameRoute: CountriesCountryNameRoute,
+  CountriesIndexRoute: CountriesIndexRoute,
+}
+
+const CountriesRouteWithChildren = CountriesRoute._addFileChildren(
+  CountriesRouteChildren,
+)
+
 interface PlayersRouteChildren {
   PlayersPlayerIdRoute: typeof PlayersPlayerIdRoute
   PlayersIndexRoute: typeof PlayersIndexRoute
@@ -285,6 +355,7 @@ const TeamsRouteWithChildren = TeamsRoute._addFileChildren(TeamsRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CompetitionsRoute: CompetitionsRouteWithChildren,
+  CountriesRoute: CountriesRouteWithChildren,
   PlayersRoute: PlayersRouteWithChildren,
   TeamsRoute: TeamsRouteWithChildren,
   MatchesFixtureIdRoute: MatchesFixtureIdRoute,

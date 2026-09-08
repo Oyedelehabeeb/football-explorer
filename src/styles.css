@@ -601,6 +601,63 @@ img { display: block; object-fit: contain; }
 .trophy-list, .sidelined-list, .transfer-list { max-height: 350px; overflow-y: auto; }.trophy-list > div, .sidelined-list > div, .transfer-list > div { min-height: 58px; padding: 10px 13px; border-bottom: 1px solid #eceae4; }.trophy-list > div { display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 8px; }.trophy-list svg { width: 16px; color: #c79a18; }.trophy-list strong, .sidelined-list strong, .transfer-list strong { display: block; font-size: 9px; }.trophy-list span, .sidelined-list span, .transfer-list span, .transfer-list small { color: var(--muted); font-size: 7px; }.trophy-list b { color: var(--orange-dark); font-size: 7px; text-transform: uppercase; }
 .sidelined-list > div { display: flex; align-items: center; gap: 10px; }.sidelined-list i { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--orange); }.transfer-list > div { display: grid; gap: 4px; }.player-history-empty { color: var(--muted); margin: 0; padding: 30px 16px; font-size: 9px; text-align: center; }
 
+/* Country discovery */
+.countries-page, .country-detail-page { min-height: 70vh; }
+.countries-hero { overflow: hidden; color: white; background: var(--black); }
+.countries-hero .page-shell { min-height: 350px; padding-block: 66px; display: grid; grid-template-columns: minmax(0,1fr) 280px; align-items: center; gap: 60px; }
+.countries-hero h1 { margin: 15px 0; font-family: 'Space Grotesk'; font-size: clamp(48px,6.5vw,80px); line-height: .93; letter-spacing: -.065em; }
+.countries-hero h1 em { color: var(--orange); font-style: normal; }
+.countries-hero p { max-width: 560px; color: #aaa9a4; line-height: 1.6; }
+.countries-hero .page-shell > svg { width: 250px; height: 250px; color: #2e2e2a; stroke-width: .7; filter: drop-shadow(28px 26px 0 rgba(240,90,36,.1)); }
+.country-directory, .country-competitions { padding-block: 52px 100px; }
+.country-directory > header, .country-competitions > header { display: flex; align-items: end; justify-content: space-between; gap: 20px; }
+.country-directory h2, .country-competitions h2 { margin: 5px 0 0; font-family: 'Space Grotesk'; font-size: 30px; letter-spacing: -.04em; }
+.country-directory > header p, .country-competitions > header p { color: var(--muted); margin: 0; font-size: 10px; }
+.country-search, .country-filter-row > label { width: min(620px,100%); height: 50px; margin-block: 25px; padding-inline: 15px; display: flex; align-items: center; gap: 10px; border: 1px solid var(--line); border-radius: 11px; background: white; }
+.country-search > svg, .country-filter-row > label > svg { width: 18px; color: var(--orange); }
+.country-search input, .country-filter-row input { height: 100%; padding: 0; border: 0; box-shadow: none; }
+.country-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; }
+.country-card { min-height: 98px; padding: 14px; display: grid; grid-template-columns: 52px minmax(0,1fr) 18px; align-items: center; gap: 13px; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 13px; background: var(--paper); transition: transform .2s ease, border-color .2s ease; }
+.country-card:hover { transform: translateY(-2px); border-color: #efb49e; }
+.country-card:focus-visible { outline: 3px solid color-mix(in srgb, var(--orange) 40%, transparent); outline-offset: 2px; }
+.country-card > span { width: 52px; height: 52px; display: grid; place-items: center; overflow: hidden; border-radius: 50%; background: var(--soft); }
+.country-card > span img { width: 100%; height: 100%; object-fit: cover; }
+.country-card > span svg { width: 27px; color: #aaa79e; }
+.country-card small { color: var(--muted); font-size: 7px; letter-spacing: .08em; }
+.country-card h3 { overflow: hidden; margin: 5px 0 0; font-family: 'Space Grotesk'; font-size: 16px; text-overflow: ellipsis; white-space: nowrap; }
+.country-card > svg { width: 15px; color: #c9c6be; }
+.country-detail-hero { color: white; background: var(--black); }
+.country-detail-hero .page-shell { padding-block: 30px 42px; }
+.country-detail-identity { min-height: 200px; display: flex; align-items: center; gap: 28px; }
+.country-detail-identity > span { width: 112px; height: 112px; display: grid; place-items: center; overflow: hidden; border: 5px solid white; border-radius: 50%; background: #252521; box-shadow: 0 18px 38px rgba(0,0,0,.3); }
+.country-detail-identity > span img { width: 100%; height: 100%; object-fit: cover; }
+.country-detail-identity > span svg { width: 52px; color: #85847e; }
+.country-detail-identity small { color: #aaa9a4; font-size: 9px; letter-spacing: .1em; text-transform: uppercase; }
+.country-detail-identity h1 { margin: 7px 0 9px; font-family: 'Space Grotesk'; font-size: clamp(48px,7vw,78px); line-height: 1; letter-spacing: -.06em; }
+.country-detail-identity p { color: #aaa9a4; margin: 0; }
+.country-detail-hero dl { margin: 0; display: grid; grid-template-columns: repeat(3,140px); justify-content: end; }
+.country-detail-hero dl > div { min-height: 66px; padding: 13px 16px; display: grid; gap: 4px; border-left: 1px solid #373731; background: #252521; }
+.country-detail-hero dl > div:first-child { border-radius: 10px 0 0 10px; }
+.country-detail-hero dl > div:last-child { border-radius: 0 10px 10px 0; }
+.country-detail-hero dt { color: #85847e; font-size: 8px; text-transform: uppercase; letter-spacing: .08em; }
+.country-detail-hero dd { margin: 0; font-family: 'Space Grotesk'; font-size: 20px; font-weight: 700; }
+.country-filter-row { margin: 24px 0 18px; display: grid; grid-template-columns: minmax(250px,1fr) auto auto; align-items: center; gap: 10px; }
+.country-filter-row > label { width: auto; margin: 0; }
+.country-filter-row > div { display: flex; padding: 4px; border: 1px solid var(--line); border-radius: 10px; background: white; }
+.country-filter-row button { min-height: 38px; padding: 7px 11px; border: 0; border-radius: 7px; color: var(--muted); background: transparent; cursor: pointer; font-size: 9px; font-weight: 700; white-space: nowrap; }
+.country-filter-row button.is-active { color: white; background: var(--black); }
+.country-competition-list { overflow: hidden; border: 1px solid var(--line); border-radius: 15px; background: var(--paper); }
+.country-competition-list > a { min-height: 88px; padding: 12px 20px; display: grid; grid-template-columns: 52px minmax(180px,1fr) 110px 110px 90px; align-items: center; gap: 14px; color: inherit; text-decoration: none; border-bottom: 1px solid #eceae4; }
+.country-competition-list > a:last-child { border-bottom: 0; }
+.country-competition-list > a:hover { background: #fdfaf7; }
+.country-competition-logo { width: 46px; height: 46px; display: grid; place-items: center; border-radius: 10px; background: var(--soft); }
+.country-competition-logo img { width: 36px; height: 36px; object-fit: contain; }
+.country-competition-list h3 { margin: 4px 0 0; font-family: 'Space Grotesk'; font-size: 14px; }
+.country-competition-list small { color: var(--muted); font-size: 7px; text-transform: uppercase; letter-spacing: .08em; }
+.country-competition-list a > span:not(.country-competition-logo), .country-competition-list a > b { display: flex; align-items: center; gap: 7px; color: var(--muted); font-size: 9px; }
+.country-competition-list a > span svg, .country-competition-list a > b svg { width: 14px; color: #aaa79e; }
+.country-competition-list a > b { justify-self: end; padding: 6px 8px; border-radius: 10px; background: var(--soft); }
+
 @media (max-width: 800px) {
   .page-shell { width: min(100% - 28px, 660px); }
   .site-header { height: 66px; }
@@ -711,6 +768,23 @@ img { display: block; object-fit: contain; }
   .player-profile-facts strong { font-size: 12px; }
   .player-stat-grid, .player-history-grid { grid-template-columns: 1fr; }
   .career-team-list { grid-template-columns: 1fr 1fr; }
+  .countries-hero .page-shell { min-height: auto; grid-template-columns: 1fr; padding-block: 48px 55px; }
+  .countries-hero h1 { font-size: clamp(42px,13vw,64px); }
+  .countries-hero .page-shell > svg { display: none; }
+  .country-directory > header, .country-competitions > header { align-items: flex-start; flex-direction: column; }
+  .country-grid { grid-template-columns: 1fr; }
+  .country-detail-identity { min-height: 160px; gap: 18px; }
+  .country-detail-identity > span { width: 76px; height: 76px; border-width: 3px; }
+  .country-detail-identity h1 { font-size: clamp(40px,13vw,60px); }
+  .country-detail-identity p { font-size: 10px; }
+  .country-detail-hero dl { grid-template-columns: repeat(3,1fr); }
+  .country-detail-hero dl > div { min-width: 0; padding: 10px; }
+  .country-filter-row { grid-template-columns: 1fr; }
+  .country-filter-row > div { overflow-x: auto; }
+  .country-filter-row button { flex: 1; }
+  .country-competition-list > a { grid-template-columns: 45px minmax(0,1fr) auto; padding-inline: 13px; }
+  .country-competition-list a > span:not(.country-competition-logo) { display: none; }
+  .country-competition-list a > b { font-size: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
