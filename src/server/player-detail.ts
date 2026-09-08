@@ -7,10 +7,12 @@ import type { PlayerCareerTeam, PlayerDetailData, PlayerSeasonResponse, PlayerSi
 
 const detailSchema = z.object({ playerId: z.number().int().positive(), season: z.number().int().min(1900).max(2200) })
 const supportSchema = z.object({ playerId: z.number().int().positive() })
+const comparisonSchema = z.object({ leftId: z.number().int().positive(), rightId: z.number().int().positive(), season: z.number().int().min(1900).max(2200) }).refine((value) => value.leftId !== value.rightId, 'Players must be different')
 const cache = new Map<string, { expiresAt: number; value: unknown }>()
 
 export type PlayerDetailResult = { ok: true; data: PlayerDetailData } | { ok: false; kind: 'configuration' | 'not-found' | 'rate-limit' | 'provider' | 'network'; message: string }
 export type PlayerSupportingResult = { ok: true; data: PlayerSupportingData } | { ok: false; kind: 'configuration' | 'rate-limit' | 'provider' | 'network'; message: string }
+export type PlayerComparisonResult = { ok: true; left: PlayerSeasonResponse; right: PlayerSeasonResponse; season: number } | { ok: false; kind: 'configuration' | 'not-found' | 'rate-limit' | 'provider' | 'network'; message: string }
 
 async function request<T>(path: string, params: Record<string, string>, ttl: number, apiKey: string): Promise<T> {
   const url = new URL(`https://v3.football.api-sports.io/${path}`)
@@ -63,4 +65,21 @@ export const getPlayerSupportingData = createServerFn({ method: 'GET' }).validat
     transfers: transfers.status === 'fulfilled' ? transfers.value : [],
     unavailable: [trophies.status === 'rejected' && 'trophies', sidelined.status === 'rejected' && 'sidelined', transfers.status === 'rejected' && 'transfers'].filter((item): item is string => Boolean(item)),
   } }
+})
+
+export const getPlayerComparison = createServerFn({ method: 'GET' }).validator(comparisonSchema).handler(async ({ data }): Promise<PlayerComparisonResult> => {
+  const apiKey = process.env.API_FOOTBALL_KEY
+  if (!apiKey) return { ok: false, kind: 'configuration', message: 'Football data is not configured on this server.' }
+  try {
+    const [leftResponse, rightResponse] = await Promise.all([
+      request<PlayerSeasonResponse[]>('players', { id: String(data.leftId), season: String(data.season) }, 24 * 60 * 60_000, apiKey),
+      request<PlayerSeasonResponse[]>('players', { id: String(data.rightId), season: String(data.season) }, 24 * 60 * 60_000, apiKey),
+    ])
+    const left = leftResponse.at(0)
+    const right = rightResponse.at(0)
+    if (!left || !right) return { ok: false, kind: 'not-found', message: 'One or both players have no statistics for the selected season.' }
+    return { ok: true, left, right, season: data.season }
+  } catch (error) {
+    return failure(error)
+  }
 })

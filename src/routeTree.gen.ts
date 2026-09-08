@@ -21,6 +21,7 @@ import { Route as CountriesCountryNameRouteImport } from './routes/countries.$co
 import { Route as MatchesFixtureIdRouteImport } from './routes/matches.$fixtureId'
 import { Route as PlayersIndexRouteImport } from './routes/players.index'
 import { Route as PlayersPlayerIdRouteImport } from './routes/players.$playerId'
+import { Route as PlayersCompareRouteImport } from './routes/players.compare'
 import { Route as TeamsIndexRouteImport } from './routes/teams.index'
 import { Route as TeamsTeamIdRouteImport } from './routes/teams.$teamId'
 
@@ -84,6 +85,11 @@ const PlayersPlayerIdRoute = PlayersPlayerIdRouteImport.update({
   path: '/$playerId',
   getParentRoute: () => PlayersRoute,
 } as any)
+const PlayersCompareRoute = PlayersCompareRouteImport.update({
+  id: '/compare',
+  path: '/compare',
+  getParentRoute: () => PlayersRoute,
+} as any)
 const TeamsIndexRoute = TeamsIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/countries/$countryName': typeof CountriesCountryNameRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
   '/players/$playerId': typeof PlayersPlayerIdRoute
+  '/players/compare': typeof PlayersCompareRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions/': typeof CompetitionsIndexRoute
   '/countries/': typeof CountriesIndexRoute
@@ -117,6 +124,7 @@ export interface FileRoutesByTo {
   '/countries/$countryName': typeof CountriesCountryNameRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
   '/players/$playerId': typeof PlayersPlayerIdRoute
+  '/players/compare': typeof PlayersCompareRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions': typeof CompetitionsIndexRoute
   '/countries': typeof CountriesIndexRoute
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/countries/$countryName': typeof CountriesCountryNameRoute
   '/matches/$fixtureId': typeof MatchesFixtureIdRoute
   '/players/$playerId': typeof PlayersPlayerIdRoute
+  '/players/compare': typeof PlayersCompareRoute
   '/teams/$teamId': typeof TeamsTeamIdRoute
   '/competitions/': typeof CompetitionsIndexRoute
   '/countries/': typeof CountriesIndexRoute
@@ -152,6 +161,7 @@ export interface FileRouteTypes {
     | '/countries/$countryName'
     | '/matches/$fixtureId'
     | '/players/$playerId'
+    | '/players/compare'
     | '/teams/$teamId'
     | '/competitions/'
     | '/countries/'
@@ -164,6 +174,7 @@ export interface FileRouteTypes {
     | '/countries/$countryName'
     | '/matches/$fixtureId'
     | '/players/$playerId'
+    | '/players/compare'
     | '/teams/$teamId'
     | '/competitions'
     | '/countries'
@@ -180,6 +191,7 @@ export interface FileRouteTypes {
     | '/countries/$countryName'
     | '/matches/$fixtureId'
     | '/players/$playerId'
+    | '/players/compare'
     | '/teams/$teamId'
     | '/competitions/'
     | '/countries/'
@@ -282,6 +294,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayersPlayerIdRouteImport
       parentRoute: typeof PlayersRoute
     }
+    '/players/compare': {
+      id: '/players/compare'
+      path: '/compare'
+      fullPath: '/players/compare'
+      preLoaderRoute: typeof PlayersCompareRouteImport
+      parentRoute: typeof PlayersRoute
+    }
     '/teams/': {
       id: '/teams/'
       path: '/'
@@ -329,11 +348,13 @@ const CountriesRouteWithChildren = CountriesRoute._addFileChildren(
 
 interface PlayersRouteChildren {
   PlayersPlayerIdRoute: typeof PlayersPlayerIdRoute
+  PlayersCompareRoute: typeof PlayersCompareRoute
   PlayersIndexRoute: typeof PlayersIndexRoute
 }
 
 const PlayersRouteChildren: PlayersRouteChildren = {
   PlayersPlayerIdRoute: PlayersPlayerIdRoute,
+  PlayersCompareRoute: PlayersCompareRoute,
   PlayersIndexRoute: PlayersIndexRoute,
 }
 

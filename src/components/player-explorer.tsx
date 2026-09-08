@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { RefreshCw, Search, ShieldAlert, UserRound } from 'lucide-react'
+import { ArrowRightLeft, RefreshCw, Search, ShieldAlert, UserRound } from 'lucide-react'
 
 import { Input } from '#/components/ui/input'
 
@@ -42,7 +42,7 @@ export function PlayerExplorer({ result, query }: { result: PlayerSearchResult |
 
   return <main id="main-content" className="players-page">
     <section className="players-hero"><div className="page-shell"><span className="eyebrow"><span /> PLAYER INDEX</span><h1>Every player has<br /><em>a story in numbers.</em></h1><p>Search football’s global player index, then explore performance, career history and honours.</p><label className="player-search"><Search aria-hidden="true" /><span className="sr-only">Search players</span><Input value={input} onChange={(event) => setInput(event.target.value)} placeholder="Search by surname — e.g. Saka" autoComplete="off" /></label><small>Enter at least four characters. Results update after you pause typing.</small></div></section>
-    <section className="player-directory page-shell" aria-labelledby="player-results-title"><header><div><span className="section-number">01 / PLAYER SEARCH</span><h2 id="player-results-title">{query ? `Results for “${query}”` : 'Find a player'}</h2></div>{result?.ok && <p>{players.length.toLocaleString()} matches</p>}</header>
+    <section className="player-directory page-shell" aria-labelledby="player-results-title"><header><div><span className="section-number">01 / PLAYER SEARCH</span><h2 id="player-results-title">{query ? `Results for “${query}”` : 'Find a player'}</h2></div><div className="player-directory-actions">{result?.ok && <p>{players.length.toLocaleString()} matches</p>}<Link to="/players/compare" search={{ season: 2024 }}><ArrowRightLeft aria-hidden="true" /> Compare players</Link></div></header>
       {!query ? <div className="player-search-prompt"><UserRound aria-hidden="true" /><h3>Start with a player’s surname</h3><p>Search uses the provider’s global profile directory. Current-team information appears on the player page.</p></div> : !result ? null : !result.ok ? <div className="error-state" role="alert"><ShieldAlert aria-hidden="true" /><div><h2>Player search unavailable</h2><p>{result.message}</p></div></div> : visible.length === 0 ? <div className="empty-state"><div className="empty-icon"><Search aria-hidden="true" /></div><h2>No players found</h2><p>Check the spelling or try a broader surname.</p></div> : <><div className="player-result-grid">{visible.map((player) => <Link key={player.id} className="player-result-card" to="/players/$playerId" params={{ playerId: String(player.id) }} search={{ season: 2024 }}><img src={player.photo} alt="" loading="lazy" /><div><span>{player.nationality ?? 'Nationality unavailable'}</span><h3>{player.name}</h3><p>{[player.position, player.age ? `${player.age} years` : null].filter(Boolean).join(' · ') || 'Profile available'}</p></div><strong>{player.number ?? '—'}</strong></Link>)}</div><div ref={sentinelRef} className="match-load-sentinel" aria-live="polite">{hasMore ? <><RefreshCw aria-hidden="true" /> Loading more players</> : `Showing all ${players.length.toLocaleString()} results`}</div></>}
     </section>
   </main>
