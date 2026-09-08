@@ -8,9 +8,10 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-import { Search, SunMedium } from 'lucide-react'
+import { Search } from 'lucide-react'
 
 import appCss from '../styles.css?url'
+import { ThemeToggle, THEME_STORAGE_KEY } from '../components/theme-toggle'
 
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -47,9 +48,12 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
 })
 
 function RootDocument({ children }: { children: React.ReactNode }) {
+  const themeScript = `(() => { try { const key = '${THEME_STORAGE_KEY}'; const saved = localStorage.getItem(key); const theme = saved === 'light' || saved === 'dark' || saved === 'system' ? saved : 'system'; const dark = theme === 'dark' || (theme === 'system' && matchMedia('(prefers-color-scheme: dark)').matches); document.documentElement.classList.toggle('dark', dark); document.documentElement.dataset.themePreference = theme; document.documentElement.style.colorScheme = dark ? 'dark' : 'light'; } catch {} })();`
+
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <HeadContent />
       </head>
       <body>
@@ -58,7 +62,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <div className="page-shell header-inner">
             <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>
             <nav aria-label="Primary navigation"><Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active' }}>Matches</Link><Link to="/countries" activeProps={{ className: 'is-active' }}>Countries</Link><Link to="/competitions" activeProps={{ className: 'is-active' }}>Competitions</Link><Link to="/teams" activeProps={{ className: 'is-active' }}>Teams</Link><Link to="/players" activeProps={{ className: 'is-active' }}>Players</Link></nav>
-            <div className="header-actions"><Link to="/search" aria-label="Search" activeProps={{ className: 'is-active' }}><Search aria-hidden="true" /></Link><button aria-label="Theme selection (coming soon)" disabled><SunMedium aria-hidden="true" /></button></div>
+            <div className="header-actions"><Link to="/search" aria-label="Search" activeProps={{ className: 'is-active' }}><Search aria-hidden="true" /></Link><ThemeToggle /></div>
           </div>
         </header>
         {children}

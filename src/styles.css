@@ -34,6 +34,35 @@
   --radius: 0.75rem;
 }
 
+.dark {
+  --ink: #f4f1e9;
+  --muted: #aaa79f;
+  --canvas: #0d0d0b;
+  --paper: #181815;
+  --soft: #252521;
+  --line: #363630;
+  --orange: #ff6b35;
+  --orange-dark: #ff8a61;
+  --black: #090908;
+  --background: #0d0d0b;
+  --foreground: #f4f1e9;
+  --card: #181815;
+  --card-foreground: #f4f1e9;
+  --popover: #20201c;
+  --popover-foreground: #f4f1e9;
+  --primary: #f4f1e9;
+  --primary-foreground: #171714;
+  --secondary: #252521;
+  --secondary-foreground: #f4f1e9;
+  --muted-foreground: #aaa79f;
+  --accent: #ff6b35;
+  --accent-foreground: #ffffff;
+  --destructive: #f06a60;
+  --border: #363630;
+  --input: #363630;
+  --ring: #ff6b35;
+}
+
 @theme inline {
   --font-sans: 'DM Sans', ui-sans-serif, system-ui, sans-serif;
   --color-background: var(--background); --color-foreground: var(--foreground);
@@ -51,7 +80,7 @@
 
 * { box-sizing: border-box; }
 html { min-height: 100%; scroll-behavior: smooth; }
-body { min-height: 100%; margin: 0; color: var(--ink); background: var(--canvas); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; }
+body { min-height: 100%; margin: 0; color: var(--ink); background: var(--canvas); font-family: 'DM Sans', sans-serif; -webkit-font-smoothing: antialiased; transition: color .2s ease, background-color .2s ease; }
 button, select, input { font: inherit; }
 button, a { -webkit-tap-highlight-color: transparent; }
 img { display: block; object-fit: contain; }
@@ -73,6 +102,17 @@ img { display: block; object-fit: contain; }
 .header-actions button, .header-actions a { width: 38px; height: 38px; border: 1px solid var(--line); border-radius: 50%; display: grid; place-items: center; color: #aaa79f; background: var(--paper); }
 .header-actions a.is-active { color: white; border-color: var(--orange); background: var(--orange); }
 .header-actions svg { width: 17px; }
+.header-actions button { cursor: pointer; }
+.theme-menu { width: 240px; padding: 8px; border-color: var(--line); border-radius: 14px; background: var(--popover); box-shadow: 0 18px 55px rgba(0,0,0,.2); }
+.theme-menu-heading { display: grid; gap: 3px; padding: 9px 10px 11px; }
+.theme-menu-heading strong { font-family: 'Space Grotesk'; font-size: 14px; }
+.theme-menu-heading span { color: var(--muted); font-size: 11px; }
+.theme-options { display: grid; gap: 3px; }
+.theme-options button { width: 100%; min-height: 42px; display: grid; grid-template-columns: 20px 1fr 18px; align-items: center; gap: 9px; padding: 0 10px; border: 0; border-radius: 9px; color: var(--muted); background: transparent; text-align: left; cursor: pointer; }
+.theme-options button:hover { color: var(--ink); background: var(--soft); }
+.theme-options button.is-selected { color: var(--ink); background: color-mix(in srgb, var(--orange) 13%, var(--paper)); }
+.theme-options svg { width: 16px; }
+.theme-options button svg:last-child { color: var(--orange); }
 
 .matchday-hero { min-height: 430px; display: grid; grid-template-columns: 1.12fr .88fr; gap: 72px; align-items: center; padding-block: 64px 54px; position: relative; }
 .matchday-hero::before { content: ''; position: absolute; top: -77px; right: -160px; width: 590px; height: 590px; opacity: .48; pointer-events: none; background-image: linear-gradient(#ddd9cf 1px, transparent 1px), linear-gradient(90deg, #ddd9cf 1px, transparent 1px); background-size: 28px 28px; mask-image: radial-gradient(circle, black 15%, transparent 70%); }
@@ -1070,6 +1110,87 @@ img { display: block; object-fit: contain; }
   .global-competition-results > a:nth-last-child(-n+4), .global-team-results > a:nth-last-child(-n+4), .global-player-results > a:nth-last-child(-n+4) { border-bottom: 1px solid #eceae4; }
   .global-competition-results > a:last-child, .global-team-results > a:last-child, .global-player-results > a:last-child { border-bottom: 0; }
 }
+
+/* Dark theme corrections for legacy surfaces that predate the shared color tokens. */
+.dark .matchday-hero::before { opacity: .19; background-image: linear-gradient(#3b3932 1px, transparent 1px), linear-gradient(90deg, #3b3932 1px, transparent 1px); }
+.dark .league-group > header,
+.dark .match-section > header,
+.dark .h2h-team-summary dl > div,
+.dark .h2h-summary > div:nth-child(2),
+.dark .h2h-upcoming > h3,
+.dark .h2h-history > h3,
+.dark .outlook-team dl > div,
+.dark .outlook-disclaimer,
+.dark .availability-team > header,
+.dark .availability-note,
+.dark .competition-panel > header,
+.dark .team-panel > header,
+.dark .player-stat-card > header,
+.dark .player-history-grid > section > header,
+.dark .global-search-section > header,
+.dark .comparison-builder > header,
+.dark .comparison-board > header,
+.dark .comparison-board > footer { background: #20201c; }
+.dark .match-row:hover,
+.dark .h2h-fixture:hover,
+.dark .availability-list > a:hover,
+.dark .competition-row:hover,
+.dark .competition-fixture:hover,
+.dark .competition-team-grid > a:hover,
+.dark .team-fixture-row:hover,
+.dark .squad-group > div > a:hover,
+.dark .global-competition-results > a:hover,
+.dark .global-team-results > a:hover,
+.dark .global-player-results > a:hover,
+.dark .country-competition-list > a:hover { background: #241d19; }
+.dark .competition-detail-logo,
+.dark .round-select,
+.dark .performer-teams img,
+.dark .team-identity > div,
+.dark .team-search,
+.dark .team-card-visual > span,
+.dark .player-search,
+.dark .player-stat-card dl > div,
+.dark .comparison-builder [data-slot='select-trigger'],
+.dark .comparison-board [data-slot='select-trigger'],
+.dark .comparison-search > label,
+.dark .comparison-results,
+.dark .comparison-results > button,
+.dark .comparison-selection,
+.dark .country-search,
+.dark .country-filter-row > label,
+.dark .country-filter-row > div { color: var(--ink); background: var(--paper); }
+.dark .match-row,
+.dark .stat-row,
+.dark .player-stat-row,
+.dark .score-breakdown > div,
+.dark .h2h-fixture,
+.dark .availability-list > a,
+.dark .competition-row,
+.dark .competition-standings th,
+.dark .competition-standings td,
+.dark .competition-fixture,
+.dark .competition-team-grid > a,
+.dark .competition-detail-sidebar dl > div,
+.dark .performer-list > li,
+.dark .team-fixture-row,
+.dark .squad-group > div > a,
+.dark .team-venue-card dl > div,
+.dark .trophy-list > div,
+.dark .sidelined-list > div,
+.dark .transfer-list > div,
+.dark .global-competition-results > a,
+.dark .global-team-results > a,
+.dark .global-player-results > a,
+.dark .comparison-results > button,
+.dark .comparison-metrics > div,
+.dark .country-competition-list > a { border-color: var(--line); }
+.dark .empty-icon,
+.dark .competition-kind.is-cup,
+.dark .career-team-list > a > span { background: #342018; }
+.dark .standing-group-title { color: var(--orange-dark); background: #2b1d18; border-color: #543126; }
+.dark .team-directory-card:hover { border-color: #8a4b35; }
+.dark input::placeholder { color: #77746c; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; } }
 
