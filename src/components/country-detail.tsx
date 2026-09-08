@@ -4,7 +4,7 @@ import { ArrowLeft, CalendarRange, Database, Globe2, Search, ShieldAlert, Trophy
 
 import { Input } from '#/components/ui/input'
 import { coverageCount, currentSeason } from '#/lib/competition'
-import { compareLeaguePriority } from '#/lib/league-priority'
+import { compareCompetitionPriority } from '#/lib/league-priority'
 
 import type { CompetitionFilter } from '#/lib/competition'
 import type { CountryCompetitionStatus } from '#/lib/country'
@@ -30,7 +30,7 @@ function CountryDetailContent({ result, search }: { result: Extract<CountryCompe
     return result.competitions.filter((item) => {
       const active = item.seasons.some((season) => season.current)
       return (type === 'all' || item.league.type.toLocaleLowerCase() === type) && (status === 'all' || (status === 'active' ? active : !active)) && (!needle || item.league.name.toLocaleLowerCase().includes(needle))
-    }).sort((a, b) => compareLeaguePriority(a.league.id, b.league.id) || Number(b.seasons.some((season) => season.current)) - Number(a.seasons.some((season) => season.current)) || (currentSeason(b)?.year ?? 0) - (currentSeason(a)?.year ?? 0) || a.league.name.localeCompare(b.league.name))
+    }).sort((a, b) => compareCompetitionPriority(a, b) || Number(b.seasons.some((season) => season.current)) - Number(a.seasons.some((season) => season.current)) || (currentSeason(b)?.year ?? 0) - (currentSeason(a)?.year ?? 0) || a.league.name.localeCompare(b.league.name))
   }, [result.competitions, search.q, status, type])
   const update = (next: Partial<SearchState>) => void navigate({ search: { ...search, ...next }, replace: true, resetScroll: false })
   useEffect(() => setInput(search.q ?? ''), [search.q])
