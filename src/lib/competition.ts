@@ -43,6 +43,8 @@ export interface CompetitionTeam {
 
 export interface CompetitionRound { round: string; dates: string[] }
 
+export type PerformerCategory = 'scorers' | 'assists' | 'yellow-cards' | 'red-cards'
+
 export function currentSeason(competition: Competition) {
   return competition.seasons.find((season) => season.current) ?? competition.seasons.at(-1)
 }

@@ -2,6 +2,7 @@ import { Link, useNavigate } from '@tanstack/react-router'
 import { ArrowLeft, CalendarDays, Check, MapPin, Shield, ShieldAlert, Trophy, Users } from 'lucide-react'
 
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '#/components/ui/select'
+import { CompetitionPerformers } from '#/components/competition-performers'
 import { isFinishedStatus, isLiveStatus } from '#/lib/football'
 
 import type { StandingRow } from '#/lib/competition'
@@ -60,7 +61,9 @@ export function CompetitionDetail({ result, timezone }: CompetitionDetailProps) 
           {fixtures.length ? <div className="competition-fixtures">{fixtures.map((fixture) => <FixtureCard key={fixture.fixture.id} fixture={fixture} />)}</div> : <Unavailable label="Fixtures" unavailable={unavailable.includes('fixtures') || unavailable.includes('rounds')} />}
         </section>
 
-        <section className="competition-panel" aria-labelledby="clubs-title"><header><div><span className="section-number">03 / CLUBS</span><h2 id="clubs-title">Competing teams</h2></div><small>{teams.length} clubs</small></header>
+        {coverage?.top_scorers || coverage?.top_assists || coverage?.top_cards ? <CompetitionPerformers key={`${competition.league.id}-${season}`} leagueId={competition.league.id} season={season} /> : null}
+
+        <section className="competition-panel" aria-labelledby="clubs-title"><header><div><span className="section-number">04 / CLUBS</span><h2 id="clubs-title">Competing teams</h2></div><small>{teams.length} clubs</small></header>
           {teams.length ? <div className="competition-team-grid">{teams.map(({ team, venue }) => <Link key={team.id} to="/teams/$teamId" params={{ teamId: String(team.id) }} search={{ league: competition.league.id, season }}><img src={team.logo} alt="" /><div><h3>{team.name}</h3><p><MapPin aria-hidden="true" />{venue.city ?? team.country}</p></div><span>{team.founded ?? '—'}</span></Link>)}</div> : <Unavailable label="Teams" unavailable={unavailable.includes('teams')} />}
         </section>
       </div>

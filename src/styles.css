@@ -389,6 +389,40 @@ img { display: block; object-fit: contain; }
 .competition-unavailable > svg { width: 24px; color: #aaa79e; }
 .competition-unavailable strong { color: var(--ink); }
 .competition-unavailable p { margin: 4px 0 0; font-size: 10px; }
+.performer-tabs { display: flex; gap: 4px; padding: 12px 18px; overflow-x: auto; border-bottom: 1px solid var(--line); }
+.performer-tabs button { flex: none; min-height: 34px; padding: 7px 13px; border: 1px solid transparent; border-radius: 18px; color: var(--muted); background: transparent; cursor: pointer; font-size: 10px; font-weight: 700; }
+.performer-tabs button:hover { color: var(--ink); background: var(--soft); }
+.performer-tabs button:focus-visible { outline: 3px solid color-mix(in srgb, var(--orange) 35%, transparent); outline-offset: 1px; }
+.performer-tabs button.is-active { color: white; background: var(--black); }
+.performer-gate { min-height: 230px; padding: 36px 20px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.performer-gate > svg { width: 30px; color: var(--orange); }
+.performer-gate h3 { margin: 11px 0 5px; font-family: 'Space Grotesk'; font-size: 17px; }
+.performer-gate p { max-width: 390px; margin: 0; color: var(--muted); font-size: 10px; line-height: 1.5; }
+.performer-gate button, .performer-error button { margin-top: 16px; padding: 9px 14px; border: 0; border-radius: 8px; color: white; background: var(--orange); cursor: pointer; font-size: 10px; font-weight: 700; }
+.performer-loading { min-height: 230px; display: flex; align-items: center; justify-content: center; gap: 9px; color: var(--muted); font-size: 10px; }
+.performer-loading svg { width: 19px; animation: spin 1s linear infinite; }
+.performer-error { min-height: 190px; padding: 28px; display: flex; align-items: center; justify-content: center; gap: 13px; }
+.performer-error > svg { width: 24px; color: var(--orange); }
+.performer-error p { margin: 3px 0 0; color: var(--muted); font-size: 10px; }
+.performer-error button { margin: 0 0 0 12px; }
+.performer-list { list-style: none; padding: 0; margin: 0; }
+.performer-list > li { min-height: 76px; padding: 10px 20px; display: grid; grid-template-columns: 42px minmax(180px,1fr) 70px 64px 58px; align-items: center; gap: 12px; border-bottom: 1px solid #eceae4; }
+.performer-list > li:last-child { border-bottom: 0; }
+.performer-rank { color: #aaa79e; font-family: 'Space Grotesk'; font-size: 10px; }
+.performer-rank svg { width: 19px; color: var(--orange); }
+.performer-player { min-width: 0; display: flex; align-items: center; gap: 11px; color: inherit; text-decoration: none; }
+.performer-player:hover strong { color: var(--orange-dark); }
+.performer-player > img { width: 44px; height: 44px; flex: none; object-fit: cover; object-position: top; border-radius: 50%; background: var(--soft); }
+.performer-player > div { min-width: 0; display: grid; gap: 3px; }
+.performer-player strong { overflow: hidden; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
+.performer-player span { color: var(--muted); font-size: 8px; }
+.performer-teams { display: flex; align-items: center; }
+.performer-teams a + a { margin-left: -7px; }
+.performer-teams img { width: 27px; height: 27px; padding: 3px; object-fit: contain; border: 1px solid var(--line); border-radius: 50%; background: white; }
+.performer-support { color: var(--muted); font-size: 8px; text-transform: uppercase; }
+.performer-support b { color: var(--ink); font-family: 'Space Grotesk'; font-size: 11px; }
+.performer-value { display: grid; color: var(--orange-dark); font-family: 'Space Grotesk'; font-size: 22px; text-align: right; }
+.performer-value small { color: var(--muted); font-family: inherit; font-size: 7px; letter-spacing: .08em; text-transform: uppercase; }
 .competition-detail-error { min-height: 65vh; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
 .competition-detail-error > svg { width: 44px; color: var(--orange); }
 .competition-detail-error h1 { font-family: 'Space Grotesk'; margin: 15px 0 5px; }
@@ -632,6 +666,12 @@ img { display: block; object-fit: contain; }
   .competition-fixture-team img { width: 27px; height: 27px; }
   .competition-team-grid { grid-template-columns: 1fr; }
   .competition-team-grid > a { border-right: 0; }
+  .performer-list > li { grid-template-columns: 32px minmax(0,1fr) 48px; padding-inline: 13px; gap: 8px; }
+  .performer-teams, .performer-support { display: none; }
+  .performer-player > img { width: 38px; height: 38px; }
+  .performer-value { font-size: 19px; }
+  .performer-error { align-items: flex-start; flex-direction: column; }
+  .performer-error button { margin-left: 37px; }
   .team-hero-grid { min-height: auto; grid-template-columns: 1fr; gap: 28px; padding-block: 32px; }
   .team-identity { gap: 17px; }
   .team-identity > div { width: 80px; height: 80px; border-radius: 16px; }
