@@ -58,7 +58,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
           <div className="page-shell header-inner">
             <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>
             <nav aria-label="Primary navigation"><Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active' }}>Matches</Link><Link to="/countries" activeProps={{ className: 'is-active' }}>Countries</Link><Link to="/competitions" activeProps={{ className: 'is-active' }}>Competitions</Link><Link to="/teams" activeProps={{ className: 'is-active' }}>Teams</Link><Link to="/players" activeProps={{ className: 'is-active' }}>Players</Link></nav>
-            <div className="header-actions"><button aria-label="Search (coming soon)" disabled><Search aria-hidden="true" /></button><button aria-label="Theme selection (coming soon)" disabled><SunMedium aria-hidden="true" /></button></div>
+            <div className="header-actions"><Link to="/search" aria-label="Search" activeProps={{ className: 'is-active' }}><Search aria-hidden="true" /></Link><button aria-label="Theme selection (coming soon)" disabled><SunMedium aria-hidden="true" /></button></div>
           </div>
         </header>
         {children}
