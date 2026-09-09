@@ -35,10 +35,31 @@ export class ApiFootballRequestError extends Error {
     public readonly kind: ApiFootballFailureKind,
     message: string,
     public readonly transient = false,
+    public readonly status?: number,
   ) {
     super(message)
     this.name = 'ApiFootballRequestError'
   }
+}
+
+let rateLimitCooldown: { until: number; message: string } | undefined
+
+function beginRateLimitCooldown(message: string, retryAfterMs: number) {
+  rateLimitCooldown = { until: Date.now() + retryAfterMs, message }
+}
+
+function activeRateLimitError() {
+  if (!rateLimitCooldown) return undefined
+  if (rateLimitCooldown.until <= Date.now()) {
+    rateLimitCooldown = undefined
+    return undefined
+  }
+  return new ApiFootballRequestError('rate-limit', rateLimitCooldown.message, true)
+}
+
+function retryAfterMilliseconds(response: Response) {
+  const seconds = Number(response.headers.get('retry-after'))
+  return Number.isFinite(seconds) && seconds > 0 ? seconds * 1_000 : 65_000
 }
 
 function numberHeader(response: Response, name: string) {
@@ -67,25 +88,56 @@ export async function apiFootballRequest<T>(options: ApiFootballRequestOptions<T
     url.toString(),
     { ttl: (value) => typeof options.ttl === 'function' ? options.ttl(value.data) : options.ttl, staleTtl: options.staleTtl ?? CACHE_TTL.daily },
     async () => {
+      const cooldownError = activeRateLimitError()
+      if (cooldownError) throw cooldownError
+
       let response: Response
       try {
         response = await fetch(url, { method: 'GET', headers: { 'x-apisports-key': apiKey } })
-      } catch {
+      } catch (error) {
+        console.error('[API-Football] Request failed before a response was received.', {
+          endpoint: url.pathname,
+          error: error instanceof Error ? error.message : String(error),
+        })
         throw new ApiFootballRequestError('network', 'The football data service could not be reached.', true)
       }
 
-      if (response.status === 429) throw new ApiFootballRequestError('rate-limit', 'The football data service is temporarily rate-limited.', true)
-      if (!response.ok) throw new ApiFootballRequestError('provider', `The football data service returned an error (${response.status}).`, response.status >= 500)
+      if (response.status === 429) {
+        const message = 'API-Football’s per-minute request limit has been reached. Please wait a minute before trying again.'
+        beginRateLimitCooldown(message, retryAfterMilliseconds(response))
+        throw new ApiFootballRequestError('rate-limit', message, true, response.status)
+      }
+      if (!response.ok) {
+        console.error('[API-Football] Provider returned an unsuccessful response.', {
+          endpoint: url.pathname,
+          status: response.status,
+        })
+        throw new ApiFootballRequestError('provider', `The football data service returned an error (${response.status}).`, response.status >= 500, response.status)
+      }
 
       let payload: { errors?: unknown[] | Record<string, unknown>; response?: T }
       try {
         payload = await response.json() as typeof payload
-      } catch {
+      } catch (error) {
+        console.error('[API-Football] Provider response could not be decoded.', {
+          endpoint: url.pathname,
+          status: response.status,
+          error: error instanceof Error ? error.message : String(error),
+        })
         throw new ApiFootballRequestError('provider', 'API-Football returned an invalid response.', true)
       }
 
       const payloadError = apiFootballPayloadError(payload.errors)
-      if (payloadError) throw new ApiFootballRequestError(payloadError.kind, payloadError.message, payloadError.kind === 'rate-limit')
+      if (payloadError) {
+        console.error('[API-Football] Provider rejected the request.', {
+          endpoint: url.pathname,
+          kind: payloadError.kind,
+          message: payloadError.message,
+          providerErrors: payload.errors,
+        })
+        if (payloadError.kind === 'rate-limit') beginRateLimitCooldown(payloadError.message, payloadError.retryAfterMs ?? 65_000)
+        throw new ApiFootballRequestError(payloadError.kind, payloadError.message, payloadError.kind === 'rate-limit')
+      }
       if (payload.response === undefined) throw new ApiFootballRequestError('provider', 'API-Football returned an invalid response.')
 
       return {
@@ -109,12 +161,16 @@ export function peekApiFootball<T>(path: string, params?: Record<string, string>
 
 export function apiFootballError(error: unknown, fallbackMessage: string) {
   if (error instanceof ApiFootballRequestError) {
-    return { ok: false as const, kind: error.kind, message: error.kind === 'configuration' ? error.message : fallbackMessageFor(error, fallbackMessage) }
+    return { ok: false as const, kind: error.kind, message: fallbackMessageFor(error, fallbackMessage) }
   }
   return { ok: false as const, kind: 'network' as const, message: fallbackMessage }
 }
 
 function fallbackMessageFor(error: ApiFootballRequestError, fallbackMessage: string) {
-  if (error.kind === 'rate-limit') return 'The football data service is temporarily rate-limited.'
+  if (error.kind === 'configuration') return error.message
+  if (error.kind === 'rate-limit') return error.message
+  if (error.message.startsWith('This data is not available') || error.message.startsWith('API-Football could not')) return error.message
+  if (error.status) return error.message
+  if (error.message === 'API-Football returned an invalid response.') return error.message
   return fallbackMessage
 }

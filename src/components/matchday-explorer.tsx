@@ -7,7 +7,7 @@ import { Button } from '#/components/ui/button'
 import { Calendar } from '#/components/ui/calendar'
 import { Popover, PopoverContent, PopoverTrigger } from '#/components/ui/popover'
 import { dateInTimezone, groupFixtures, isFinishedStatus, isLiveStatus, matchesFilter, offsetDate } from '#/lib/football'
-import { compareLeaguePriority } from '#/lib/league-priority'
+import { compareCompetitionPriority } from '#/lib/league-priority'
 import { getMatchday } from '#/server/fixtures'
 import type { FixtureSummary, MatchFilter } from '#/lib/football'
 import type { MatchdayResult } from '#/server/fixtures'
@@ -82,7 +82,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
 
   const result = query.data
   const fixtures = result.ok ? result.fixtures : []
-  const filtered = useMemo(() => fixtures.filter((fixture) => matchesFilter(fixture, filter)).map((fixture, index) => ({ fixture, index })).sort((a, b) => compareLeaguePriority(a.fixture.league.id, b.fixture.league.id) || a.index - b.index).map(({ fixture }) => fixture), [fixtures, filter])
+  const filtered = useMemo(() => fixtures.filter((fixture) => matchesFilter(fixture, filter)).map((fixture, index) => ({ fixture, index })).sort((a, b) => compareCompetitionPriority(a.fixture, b.fixture) || a.index - b.index).map(({ fixture }) => fixture), [fixtures, filter])
   const visibleFixtures = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
   const groups = useMemo(() => groupFixtures(visibleFixtures), [visibleFixtures])
   const hasMore = visibleCount < filtered.length
