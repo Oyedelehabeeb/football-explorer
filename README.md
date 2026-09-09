@@ -56,6 +56,11 @@ static assets. The included `vercel.json` makes framework detection explicit.
 Variables prefixed with `VITE_` are included in the browser bundle. Keep secrets
 unprefixed so they remain server-only.
 
+Set `VITE_PUBLIC_SITE_URL` to the deployed origin (for example,
+`https://football.example`) so canonical URLs, social metadata, `robots.txt`, and
+the sitemap use the production domain. This value is public. Keep
+`API_FOOTBALL_KEY` unprefixed and server-only.
+
 
 ## Shadcn
 

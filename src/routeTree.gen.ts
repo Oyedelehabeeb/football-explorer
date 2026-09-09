@@ -13,7 +13,9 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as CompetitionsRouteImport } from './routes/competitions'
 import { Route as CountriesRouteImport } from './routes/countries'
 import { Route as PlayersRouteImport } from './routes/players'
+import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as TeamsRouteImport } from './routes/teams'
 import { Route as CoachesCoachIdRouteImport } from './routes/coaches.$coachId'
 import { Route as CompetitionsIndexRouteImport } from './routes/competitions.index'
@@ -47,9 +49,19 @@ const PlayersRoute = PlayersRouteImport.update({
   path: '/players',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RobotsDottxtRoute = RobotsDottxtRouteImport.update({
+  id: '/robots.txt',
+  path: '/robots.txt',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SearchRoute = SearchRouteImport.update({
   id: '/search',
   path: '/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TeamsRoute = TeamsRouteImport.update({
@@ -118,7 +130,9 @@ export interface FileRoutesByFullPath {
   '/competitions': typeof CompetitionsRouteWithChildren
   '/countries': typeof CountriesRouteWithChildren
   '/players': typeof PlayersRouteWithChildren
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/teams': typeof TeamsRouteWithChildren
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
@@ -134,7 +148,9 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
   '/countries/$countryName': typeof CountriesCountryNameRoute
@@ -153,7 +169,9 @@ export interface FileRoutesById {
   '/competitions': typeof CompetitionsRouteWithChildren
   '/countries': typeof CountriesRouteWithChildren
   '/players': typeof PlayersRouteWithChildren
+  '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/teams': typeof TeamsRouteWithChildren
   '/coaches/$coachId': typeof CoachesCoachIdRoute
   '/competitions/$leagueId': typeof CompetitionsLeagueIdRoute
@@ -174,7 +192,9 @@ export interface FileRouteTypes {
     | '/competitions'
     | '/countries'
     | '/players'
+    | '/robots.txt'
     | '/search'
+    | '/sitemap.xml'
     | '/teams'
     | '/coaches/$coachId'
     | '/competitions/$leagueId'
@@ -190,7 +210,9 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/robots.txt'
     | '/search'
+    | '/sitemap.xml'
     | '/coaches/$coachId'
     | '/competitions/$leagueId'
     | '/countries/$countryName'
@@ -208,7 +230,9 @@ export interface FileRouteTypes {
     | '/competitions'
     | '/countries'
     | '/players'
+    | '/robots.txt'
     | '/search'
+    | '/sitemap.xml'
     | '/teams'
     | '/coaches/$coachId'
     | '/competitions/$leagueId'
@@ -228,7 +252,9 @@ export interface RootRouteChildren {
   CompetitionsRoute: typeof CompetitionsRouteWithChildren
   CountriesRoute: typeof CountriesRouteWithChildren
   PlayersRoute: typeof PlayersRouteWithChildren
+  RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   TeamsRoute: typeof TeamsRouteWithChildren
   CoachesCoachIdRoute: typeof CoachesCoachIdRoute
   MatchesFixtureIdRoute: typeof MatchesFixtureIdRoute
@@ -264,11 +290,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlayersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/robots.txt': {
+      id: '/robots.txt'
+      path: '/robots.txt'
+      fullPath: '/robots.txt'
+      preLoaderRoute: typeof RobotsDottxtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/search': {
       id: '/search'
       path: '/search'
       fullPath: '/search'
       preLoaderRoute: typeof SearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/teams': {
@@ -418,7 +458,9 @@ const rootRouteChildren: RootRouteChildren = {
   CompetitionsRoute: CompetitionsRouteWithChildren,
   CountriesRoute: CountriesRouteWithChildren,
   PlayersRoute: PlayersRouteWithChildren,
+  RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   TeamsRoute: TeamsRouteWithChildren,
   CoachesCoachIdRoute: CoachesCoachIdRoute,
   MatchesFixtureIdRoute: MatchesFixtureIdRoute,

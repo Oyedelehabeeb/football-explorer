@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 
 import { GlobalSearch } from '#/components/global-search'
+import { seoHead } from '#/lib/seo'
 import { getCurrentCompetitions } from '#/server/competitions'
 import { searchPlayers } from '#/server/players'
 import { getTeams } from '#/server/teams'
@@ -20,6 +21,6 @@ export const Route = createFileRoute('/search')({
     ])
     return { query: deps.query, result: { competitions, teams, players } }
   },
-  head: ({ loaderData }) => ({ meta: [{ title: loaderData?.query ? `Search: ${loaderData.query} — Football Explorer` : 'Search — Football Explorer' }, { name: 'description', content: 'Search football competitions, clubs and players from one place.' }] }),
+  head: ({ loaderData }) => seoHead({ title: loaderData?.query ? `Search: ${loaderData.query} — Football Explorer` : 'Search — Football Explorer', description: 'Search football competitions, clubs and players from one place.', path: '/search', noIndex: true }),
   component: () => <GlobalSearch {...Route.useLoaderData()} />,
 })

@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router'
 import { z } from 'zod'
 
 import { CompetitionExplorer } from '#/components/competition-explorer'
+import { seoHead } from '#/lib/seo'
 import { getCurrentCompetitions } from '#/server/competitions'
 
 const searchSchema = z.object({
@@ -13,7 +14,7 @@ const searchSchema = z.object({
 export const Route = createFileRoute('/competitions/')({
   validateSearch: searchSchema,
   loader: () => getCurrentCompetitions(),
-  head: () => ({ meta: [{ title: 'Explore football competitions — Football Explorer' }, { name: 'description', content: 'Browse football leagues and cups covered in the 2024/25 season.' }] }),
+  head: () => seoHead({ title: 'Explore football competitions — Football Explorer', description: 'Browse football leagues and cups covered in the 2024/25 season.', path: '/competitions' }),
   component: CompetitionsPage,
 })
 

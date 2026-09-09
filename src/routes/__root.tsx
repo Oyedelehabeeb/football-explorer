@@ -12,6 +12,7 @@ import { Search } from 'lucide-react'
 
 import appCss from '../styles.css?url'
 import { ThemeToggle, THEME_STORAGE_KEY } from '../components/theme-toggle'
+import { absoluteUrl, seoHead } from '../lib/seo'
 
 import type { QueryClient } from '@tanstack/react-query'
 
@@ -20,30 +21,35 @@ interface MyRouterContext {
 }
 
 export const Route = createRootRouteWithContext<MyRouterContext>()({
-  head: () => ({
-    meta: [
-      {
-        charSet: 'utf-8',
+  head: () => {
+    const seo = seoHead({
+      title: 'Football Explorer — Every match, one clear view',
+      description: 'Explore football fixtures, scores, competitions, teams and players from one clear football intelligence platform.',
+      path: '/',
+      structuredData: {
+        '@context': 'https://schema.org',
+        '@type': 'WebSite',
+        name: 'Football Explorer',
+        url: absoluteUrl('/'),
+        potentialAction: {
+          '@type': 'SearchAction',
+          target: absoluteUrl('/search?q={search_term_string}'),
+          'query-input': 'required name=search_term_string',
+        },
       },
-      {
-        name: 'viewport',
-        content: 'width=device-width, initial-scale=1',
-      },
-      {
-        title: 'Football Explorer — Every match, one clear view',
-      },
-      {
-        name: 'description',
-        content: 'Explore football fixtures, scores and match states across competitions.',
-      },
-    ],
-    links: [
+    })
+    return {
+      ...seo,
+      meta: [{ charSet: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }, ...seo.meta],
+      links: [
       {
         rel: 'stylesheet',
         href: appCss,
       },
-    ],
-  }),
+      ...seo.links,
+      ],
+    }
+  },
   shellComponent: RootDocument,
 })
 
