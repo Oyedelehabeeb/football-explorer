@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link, useNavigate } from '@tanstack/react-router'
-import { CalendarDays, ChevronLeft, ChevronRight, Clock3, Radio, RefreshCw, Search, ShieldAlert, Trophy } from 'lucide-react'
+import { BatteryFull, CalendarDays, ChevronLeft, ChevronRight, Clock3, Radio, RefreshCw, Search, ShieldAlert, Signal, Trophy, Wifi } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
 import { Calendar } from '#/components/ui/calendar'
@@ -54,6 +54,49 @@ function MatchRow({ fixture, timezone }: { fixture: FixtureSummary; timezone: st
 
 function EmptyState({ filter }: { filter: MatchFilter }) {
   return <div className="empty-state"><div className="empty-icon"><Search aria-hidden="true" /></div><h2>No {filter === 'all' ? '' : `${filter} `}matches found</h2><p>Try another match status or move to a different date.</p></div>
+}
+
+function HeroPhone({ fixtures, liveCount, finishedCount, timezone }: { fixtures: FixtureSummary[]; liveCount: number; finishedCount: number; timezone: string }) {
+  const preview = fixtures.slice(0, 3)
+  const competitionCount = new Set(fixtures.map((item) => item.league.id)).size
+  const [statusTime, setStatusTime] = useState('—:—')
+
+  useEffect(() => {
+    const updateTime = () => setStatusTime(new Intl.DateTimeFormat('en', { timeZone: timezone, hour: 'numeric', minute: '2-digit', hour12: false }).format(new Date()))
+    updateTime()
+    const timer = window.setInterval(updateTime, 30_000)
+    return () => window.clearInterval(timer)
+  }, [timezone])
+
+  return (
+    <div className="hero-device-stage" aria-label={`${fixtures.length} fixtures across ${competitionCount} competitions`}>
+      <div className="hero-device-orbit" aria-hidden="true" />
+      <div className="hero-device-note hero-device-note-top"><span>Matchday</span><strong>{fixtures.length.toString().padStart(2, '0')}</strong><small>fixtures</small></div>
+      <div className="hero-device-note hero-device-note-bottom"><span>Coverage</span><strong>{competitionCount}</strong><small>competitions</small></div>
+      <div className="hero-phone" aria-hidden="true">
+        <div className="hero-phone-frame">
+          <div className="hero-phone-status"><span>{statusTime}</span><span><Signal /><Wifi /><BatteryFull /></span></div>
+          <div className="hero-phone-island" />
+          <div className="hero-phone-app">
+            <header><div className="hero-phone-brand"><span>FE</span><b>Football<strong>Explorer</strong></b></div><span className="hero-phone-avatar">FE</span></header>
+            <section className="hero-phone-intro"><small>THE WORLD GAME</small><h2>Today’s<br /><em>football.</em></h2><div><span>{liveCount} live</span><span>{finishedCount} final</span></div></section>
+            <div className="hero-phone-date"><span>Match centre</span><b>Today</b></div>
+            <div className="hero-phone-matches">
+              {preview.length ? preview.map((fixture) => (
+                <article key={fixture.fixture.id}>
+                  <div><small>{fixture.league.name}</small><span>{statusLabel(fixture)}</span></div>
+                  <div><p><img src={fixture.teams.home.logo} alt="" />{fixture.teams.home.name}</p><b>{fixture.goals.home ?? '—'}</b></div>
+                  <div><p><img src={fixture.teams.away.logo} alt="" />{fixture.teams.away.name}</p><b>{fixture.goals.away ?? '—'}</b></div>
+                </article>
+              )) : <div className="hero-phone-empty"><Trophy /><span>Fixtures will appear here</span></div>}
+            </div>
+            <footer><span>Matches</span><span>Competitions</span><span>{timezone.split('/').at(-1)?.replaceAll('_', ' ')}</span></footer>
+          </div>
+        </div>
+      </div>
+      <div className="hero-device-caption"><span>Football intelligence</span><strong>Built for every screen.</strong></div>
+    </div>
+  )
 }
 
 export function MatchdayExplorer({ date, timezone, filter, initialData }: MatchdayExplorerProps) {
@@ -118,11 +161,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
     <main id="main-content">
       <section className="matchday-hero page-shell" aria-labelledby="matchday-title">
         <div className="hero-copy"><span className="eyebrow"><span /> The world game, in focus</span><h1 id="matchday-title">Every match.<br /><em>One clear view.</em></h1><p>Explore today’s football across competitions, with scores, match states and the context that matters.</p></div>
-        <div className="hero-scoreboard" aria-label="Selected matchday summary">
-          <div className="scoreboard-topline"><span>Matchday index</span>{liveCount > 0 && <span className="live-pill"><span /> {liveCount} live</span>}</div>
-          <strong>{fixtures.length.toString().padStart(2, '0')}</strong><span>fixtures across {new Set(fixtures.map((item) => item.league.id)).size} competitions</span>
-          <div className="scoreboard-stats"><div><b>{finishedCount}</b><span>Completed</span></div><div><b>{Math.max(0, fixtures.length - finishedCount - liveCount)}</b><span>To play</span></div><div><b>{timezone.split('/').at(-1)?.replaceAll('_', ' ')}</b><span>Your time</span></div></div>
-        </div>
+        <HeroPhone fixtures={filtered} liveCount={liveCount} finishedCount={finishedCount} timezone={timezone} />
       </section>
 
       <section className="matchday-content page-shell" aria-labelledby="fixtures-title">
