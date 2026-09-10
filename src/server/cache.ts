@@ -1,3 +1,5 @@
+import { serverRuntimeConfig } from '#/server/config'
+
 export interface CachePolicy<T> {
   ttl: number | ((value: T) => number)
   staleTtl?: number
@@ -22,6 +24,10 @@ export class MemoryCache {
   private readonly pending = new Map<string, Promise<unknown>>()
 
   constructor(private readonly maxEntries = DEFAULT_MAX_ENTRIES) {}
+
+  stats() {
+    return { driver: 'memory' as const, entries: this.entries.size, pending: this.pending.size, maxEntries: this.maxEntries }
+  }
 
   peek<T>(key: string) {
     const entry = this.entries.get(key)
@@ -88,4 +94,4 @@ export class MemoryCache {
   }
 }
 
-export const serverCache = new MemoryCache()
+export const serverCache = new MemoryCache(serverRuntimeConfig.cacheMaxEntries)

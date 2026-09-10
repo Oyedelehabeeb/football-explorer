@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CompetitionsRouteImport } from './routes/competitions'
 import { Route as CountriesRouteImport } from './routes/countries'
+import { Route as HealthDotjsonRouteImport } from './routes/health[.]json'
 import { Route as PlayersRouteImport } from './routes/players'
 import { Route as RobotsDottxtRouteImport } from './routes/robots[.]txt'
 import { Route as SearchRouteImport } from './routes/search'
@@ -42,6 +43,11 @@ const CompetitionsRoute = CompetitionsRouteImport.update({
 const CountriesRoute = CountriesRouteImport.update({
   id: '/countries',
   path: '/countries',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HealthDotjsonRoute = HealthDotjsonRouteImport.update({
+  id: '/health.json',
+  path: '/health.json',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PlayersRoute = PlayersRouteImport.update({
@@ -129,6 +135,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/competitions': typeof CompetitionsRouteWithChildren
   '/countries': typeof CountriesRouteWithChildren
+  '/health.json': typeof HealthDotjsonRoute
   '/players': typeof PlayersRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
@@ -148,6 +155,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/health.json': typeof HealthDotjsonRoute
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -168,6 +176,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/competitions': typeof CompetitionsRouteWithChildren
   '/countries': typeof CountriesRouteWithChildren
+  '/health.json': typeof HealthDotjsonRoute
   '/players': typeof PlayersRouteWithChildren
   '/robots.txt': typeof RobotsDottxtRoute
   '/search': typeof SearchRoute
@@ -191,6 +200,7 @@ export interface FileRouteTypes {
     | '/'
     | '/competitions'
     | '/countries'
+    | '/health.json'
     | '/players'
     | '/robots.txt'
     | '/search'
@@ -210,6 +220,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/health.json'
     | '/robots.txt'
     | '/search'
     | '/sitemap.xml'
@@ -229,6 +240,7 @@ export interface FileRouteTypes {
     | '/'
     | '/competitions'
     | '/countries'
+    | '/health.json'
     | '/players'
     | '/robots.txt'
     | '/search'
@@ -251,6 +263,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CompetitionsRoute: typeof CompetitionsRouteWithChildren
   CountriesRoute: typeof CountriesRouteWithChildren
+  HealthDotjsonRoute: typeof HealthDotjsonRoute
   PlayersRoute: typeof PlayersRouteWithChildren
   RobotsDottxtRoute: typeof RobotsDottxtRoute
   SearchRoute: typeof SearchRoute
@@ -281,6 +294,13 @@ declare module '@tanstack/react-router' {
       path: '/countries'
       fullPath: '/countries'
       preLoaderRoute: typeof CountriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/health.json': {
+      id: '/health.json'
+      path: '/health.json'
+      fullPath: '/health.json'
+      preLoaderRoute: typeof HealthDotjsonRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/players': {
@@ -457,6 +477,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CompetitionsRoute: CompetitionsRouteWithChildren,
   CountriesRoute: CountriesRouteWithChildren,
+  HealthDotjsonRoute: HealthDotjsonRoute,
   PlayersRoute: PlayersRouteWithChildren,
   RobotsDottxtRoute: RobotsDottxtRoute,
   SearchRoute: SearchRoute,

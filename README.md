@@ -52,6 +52,8 @@ npm run check
 
 Vercel runs the build script and deploys Nitro's output as Vercel Functions and
 static assets. The included `vercel.json` makes framework detection explicit.
+Fluid Compute is enabled so concurrent requests can reuse warm function instances
+and the in-memory request cache more effectively.
 
 Variables prefixed with `VITE_` are included in the browser bundle. Keep secrets
 unprefixed so they remain server-only.
@@ -61,13 +63,28 @@ Set `VITE_PUBLIC_SITE_URL` to the deployed origin (for example,
 the sitemap use the production domain. This value is public. Keep
 `API_FOOTBALL_KEY` unprefixed and server-only.
 
+`API_FOOTBALL_TIMEOUT_MS` controls the provider request timeout and defaults to
+8 seconds. `CACHE_MAX_ENTRIES` caps the process-local LRU-style cache and defaults
+to 300 entries. These settings are optional and must remain server-only.
+
+The launch cache intentionally uses process memory: it is free, deduplicates
+requests within a warm function instance, and serves stale data for transient
+provider failures. It is not durable or shared between function instances, so a
+cold start or scale-out can cause a cache miss. The cache boundary in
+`src/server/cache.ts` can be replaced with a shared adapter later without changing
+feature code.
+
+`GET /health.json` reports deployment configuration and cache statistics without
+contacting API-Football or consuming quota. Its `apiFootball.checked` field is
+always `false` by design.
+
 
 ## Shadcn
 
 Add components using the latest version of [Shadcn](https://ui.shadcn.com/).
 
 ```bash
-pnpm dlx shadcn@latest add button
+npx shadcn@latest add button
 ```
 
 

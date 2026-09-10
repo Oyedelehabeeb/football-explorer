@@ -1,5 +1,6 @@
 import { apiFootballPayloadError } from '#/server/api-football-error'
 import { serverCache } from '#/server/cache'
+import { serverRuntimeConfig } from '#/server/config'
 
 export const CACHE_TTL = {
   live: 55_000,
@@ -80,7 +81,7 @@ function canUseStale(error: unknown) {
 }
 
 export async function apiFootballRequest<T>(options: ApiFootballRequestOptions<T>): Promise<ApiFootballResponse<T>> {
-  const apiKey = process.env.API_FOOTBALL_KEY
+  const apiKey = serverRuntimeConfig.apiFootballKey
   if (!apiKey) throw new ApiFootballRequestError('configuration', 'Football data is not configured on this server.')
 
   const url = requestUrl(options.path, options.params)
@@ -93,7 +94,11 @@ export async function apiFootballRequest<T>(options: ApiFootballRequestOptions<T
 
       let response: Response
       try {
-        response = await fetch(url, { method: 'GET', headers: { 'x-apisports-key': apiKey } })
+        response = await fetch(url, {
+          method: 'GET',
+          headers: { 'x-apisports-key': apiKey },
+          signal: AbortSignal.timeout(serverRuntimeConfig.apiFootballTimeoutMs),
+        })
       } catch (error) {
         console.error('[API-Football] Request failed before a response was received.', {
           endpoint: url.pathname,
