@@ -8,7 +8,7 @@ import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 
 import TanStackQueryDevtools from '../integrations/tanstack-query/devtools'
-import { Search } from 'lucide-react'
+import { CalendarDays, Flag, Search, Trophy, UserRound, Users } from 'lucide-react'
 
 import appCss from '../styles.css?url'
 import { ThemeToggle, THEME_STORAGE_KEY } from '../components/theme-toggle'
@@ -67,12 +67,19 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <header className="site-header">
           <div className="page-shell header-inner">
             <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>
-            <nav aria-label="Primary navigation"><Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active' }}>Matches</Link><Link to="/countries" activeProps={{ className: 'is-active' }}>Countries</Link><Link to="/competitions" activeProps={{ className: 'is-active' }}>Competitions</Link><Link to="/teams" activeProps={{ className: 'is-active' }}>Teams</Link><Link to="/players" activeProps={{ className: 'is-active' }}>Players</Link></nav>
+            <nav aria-label="Primary navigation"><Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Matches</Link><Link to="/countries" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Countries</Link><Link to="/competitions" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Competitions</Link><Link to="/teams" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Teams</Link><Link to="/players" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Players</Link></nav>
             <div className="header-actions"><Link to="/search" aria-label="Search" activeProps={{ className: 'is-active' }}><Search aria-hidden="true" /></Link><ThemeToggle /></div>
           </div>
         </header>
         {children}
         <footer className="site-footer"><div className="page-shell footer-inner"><span>Football Explorer</span><p>Football intelligence, without the noise.</p><span>Data provided by API-Football</span></div></footer>
+        <nav className="mobile-navigation" aria-label="Mobile primary navigation">
+          <Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active', 'aria-current': 'page' }}><CalendarDays aria-hidden="true" /><span>Matches</span></Link>
+          <Link to="/countries" activeProps={{ className: 'is-active', 'aria-current': 'page' }}><Flag aria-hidden="true" /><span>Countries</span></Link>
+          <Link to="/competitions" activeProps={{ className: 'is-active', 'aria-current': 'page' }}><Trophy aria-hidden="true" /><span>Competitions</span></Link>
+          <Link to="/teams" activeProps={{ className: 'is-active', 'aria-current': 'page' }}><Users aria-hidden="true" /><span>Teams</span></Link>
+          <Link to="/players" activeProps={{ className: 'is-active', 'aria-current': 'page' }}><UserRound aria-hidden="true" /><span>Players</span></Link>
+        </nav>
         <TanStackDevtools
           config={{
             position: 'bottom-right',

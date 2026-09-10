@@ -171,7 +171,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
             <Button variant="outline" size="icon" aria-label="Next day" onClick={() => setSearch({ date: offsetDate(date, 1) })}><ChevronRight aria-hidden="true" /></Button></div></div>
 
         <div className="filter-bar" role="group" aria-label="Filter matches by status">
-          {FILTERS.map((item) => <button key={item.value} className={filter === item.value ? 'is-active' : ''} onClick={() => setSearch({ filter: item.value })}>{item.value === 'live' && <Radio aria-hidden="true" />}{item.label}{item.value === 'live' && liveCount > 0 && <span>{liveCount}</span>}</button>)}
+          {FILTERS.map((item) => <button key={item.value} type="button" aria-pressed={filter === item.value} className={filter === item.value ? 'is-active' : ''} onClick={() => setSearch({ filter: item.value })}>{item.value === 'live' && <Radio aria-hidden="true" />}{item.label}{item.value === 'live' && liveCount > 0 && <span>{liveCount}</span>}</button>)}
           <label className="timezone-select"><Clock3 aria-hidden="true" /><span className="sr-only">Timezone</span><select value={timezone} onChange={(event) => setSearch({ timezone: event.target.value })}><option value={timezone}>{timezone.replaceAll('_', ' ')}</option>{timezone !== 'UTC' && <option value="UTC">UTC</option>}</select></label><button className="score-refresh" onClick={refreshScores} disabled={query.isFetching}><RefreshCw aria-hidden="true" />{query.isFetching ? 'Refreshing' : 'Refresh scores'}</button>
         </div>
         {query.isFetching && <div className="refresh-indicator"><RefreshCw aria-hidden="true" /> Updating scores</div>}
