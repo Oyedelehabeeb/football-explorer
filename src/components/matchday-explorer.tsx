@@ -124,6 +124,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
   }, [])
 
   const result = query.data
+  const quotaExhausted = result.ok && result.quota.remaining === 0
   const fixtures = result.ok ? result.fixtures : []
   const filtered = useMemo(() => fixtures.filter((fixture) => matchesFilter(fixture, filter)).map((fixture, index) => ({ fixture, index })).sort((a, b) => compareCompetitionPriority(a.fixture, b.fixture) || a.index - b.index).map(({ fixture }) => fixture), [fixtures, filter])
   const visibleFixtures = useMemo(() => filtered.slice(0, visibleCount), [filtered, visibleCount])
@@ -172,7 +173,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
 
         <div className="filter-bar" role="group" aria-label="Filter matches by status">
           {FILTERS.map((item) => <button key={item.value} type="button" aria-pressed={filter === item.value} className={filter === item.value ? 'is-active' : ''} onClick={() => setSearch({ filter: item.value })}>{item.value === 'live' && <Radio aria-hidden="true" />}{item.label}{item.value === 'live' && liveCount > 0 && <span>{liveCount}</span>}</button>)}
-          <label className="timezone-select"><Clock3 aria-hidden="true" /><span className="sr-only">Timezone</span><select value={timezone} onChange={(event) => setSearch({ timezone: event.target.value })}><option value={timezone}>{timezone.replaceAll('_', ' ')}</option>{timezone !== 'UTC' && <option value="UTC">UTC</option>}</select></label><button className="score-refresh" onClick={refreshScores} disabled={query.isFetching}><RefreshCw aria-hidden="true" />{query.isFetching ? 'Refreshing' : 'Refresh scores'}</button>
+          <label className="timezone-select"><Clock3 aria-hidden="true" /><span className="sr-only">Timezone</span><select value={timezone} onChange={(event) => setSearch({ timezone: event.target.value })}><option value={timezone}>{timezone.replaceAll('_', ' ')}</option>{timezone !== 'UTC' && <option value="UTC">UTC</option>}</select></label>{result.ok && result.quota.remaining !== null && <span className={`quota-meter ${quotaExhausted ? 'is-exhausted' : ''}`} title="Daily API requests remaining when this data was fetched" aria-label={`${result.quota.remaining} of ${result.quota.limit ?? 'unknown'} daily API requests remaining`}>{result.quota.remaining}/{result.quota.limit ?? '—'} requests</span>}<button className={`score-refresh ${quotaExhausted ? 'is-exhausted' : ''}`} onClick={refreshScores} disabled={query.isFetching || quotaExhausted}><RefreshCw aria-hidden="true" />{quotaExhausted ? 'Quota reached' : query.isFetching ? 'Refreshing' : 'Refresh scores'}</button>
         </div>
         {query.isFetching && <div className="refresh-indicator"><RefreshCw aria-hidden="true" /> Updating scores</div>}
         {!result.ok ? <div className="error-state" role="alert"><ShieldAlert aria-hidden="true" /><div><h2>Match centre unavailable</h2><p>{result.message}</p></div><Button variant="outline" onClick={() => void query.refetch()}>Try again</Button></div>

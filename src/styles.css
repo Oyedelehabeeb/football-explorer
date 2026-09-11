@@ -185,6 +185,8 @@ img { display: block; object-fit: contain; }
 .filter-bar > button.score-refresh:disabled { opacity: .65; cursor: wait; }
 .filter-bar > button.score-refresh svg { transition: transform .2s ease; }
 .filter-bar > button.score-refresh:disabled svg { animation: spin 1s linear infinite; }
+.filter-bar > button.score-refresh.is-exhausted { cursor: not-allowed; }.filter-bar > button.score-refresh.is-exhausted svg { animation: none; }
+.quota-meter { min-height: 36px; padding-inline: 11px; display: inline-flex; align-items: center; color: var(--muted); border: 1px solid var(--line); border-radius: 7px; background: var(--cream); font-size: 8px; font-weight: 700; white-space: nowrap; }.quota-meter.is-exhausted { color: #a32b16; border-color: #e6aa98; background: #fff1eb; }
 .timezone-select { margin-left: auto; display: flex; align-items: center; gap: 8px; padding: 0 10px; color: var(--muted); }
 .timezone-select svg { width: 15px; }
 .timezone-select select { max-width: 165px; border: 0; outline: none; color: var(--muted); background: transparent; font-size: 12px; }

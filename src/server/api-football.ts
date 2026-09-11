@@ -145,12 +145,21 @@ export async function apiFootballRequest<T>(options: ApiFootballRequestOptions<T
       }
       if (payload.response === undefined) throw new ApiFootballRequestError('provider', 'API-Football returned an invalid response.')
 
+      const dailyRemaining = numberHeader(response, 'x-ratelimit-requests-remaining')
+      const dailyLimit = numberHeader(response, 'x-ratelimit-requests-limit')
+      const minuteRemaining = numberHeader(response, 'x-ratelimit-remaining')
+      if (dailyRemaining === 0) {
+        beginRateLimitCooldown('The API-Football daily request quota has been reached. Cached data remains available.', 5 * 60_000)
+      } else if (minuteRemaining === 0) {
+        beginRateLimitCooldown('API-Football’s per-minute request limit has been reached. Please wait a minute before trying again.', 65_000)
+      }
+
       return {
         data: payload.response,
         fetchedAt: new Date().toISOString(),
         quota: {
-          remaining: numberHeader(response, 'x-ratelimit-requests-remaining'),
-          limit: numberHeader(response, 'x-ratelimit-requests-limit'),
+          remaining: dailyRemaining,
+          limit: dailyLimit,
         },
       }
     },
