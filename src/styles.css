@@ -30,6 +30,11 @@
   --border: #dedcd4;
   --input: #dedcd4;
   --ring: #f05a24;
+  --phone-ink: #171714;
+  --phone-muted: #77746c;
+  --phone-surface: #f7f6f2;
+  --phone-paper: #ffffff;
+  --phone-line: #dedcd4;
   --radius: 0.75rem;
 }
 
@@ -60,6 +65,11 @@
   --border: #363630;
   --input: #363630;
   --ring: #ff6b35;
+  --phone-ink: #f7f6f2;
+  --phone-muted: #77766f;
+  --phone-surface: #11110f;
+  --phone-paper: #161613;
+  --phone-line: #2e2e29;
 }
 
 @theme inline {
@@ -94,7 +104,11 @@ img { display: block; object-fit: contain; }
 .header-inner { height: 100%; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; }
 .wordmark { color: inherit; text-decoration: none; display: inline-flex; align-items: center; gap: 10px; font-family: 'Space Grotesk', sans-serif; font-size: 18px; width: max-content; }
 .wordmark strong { color: var(--orange); }
-.wordmark-ball { width: 34px; height: 34px; display: grid; place-items: center; border-radius: 50%; background: var(--black); color: white; font-size: 10px; font-weight: 700; box-shadow: inset -5px -5px 0 var(--orange); }
+.wordmark-logo { width: 42px; height: 42px; position: relative; flex: none; transform: scale(1.13); filter: drop-shadow(0 5px 9px rgba(20,20,17,.14)); }
+.wordmark-logo img { width: 42px; height: 42px; position: absolute; inset: 0; }
+.wordmark-logo-dark { display: none; }
+.dark .wordmark-logo-light { display: none; }
+.dark .wordmark-logo-dark { display: block; }
 .site-header nav { display: flex; align-self: stretch; gap: 34px; align-items: center; color: #89867e; font-size: 14px; font-weight: 600; }
 .site-header nav a { color: #89867e; text-decoration: none; align-self: stretch; display: flex; align-items: center; position: relative; }
 .site-header nav a.is-active { color: var(--ink); }
@@ -122,43 +136,50 @@ img { display: block; object-fit: contain; }
 .eyebrow > span { width: 28px; height: 2px; background: var(--orange); }
 .hero-copy h1 { font-family: 'Space Grotesk', sans-serif; font-size: clamp(54px, 6.3vw, 88px); line-height: .92; letter-spacing: -.065em; margin: 22px 0 28px; max-width: 720px; }
 .hero-copy h1 em { color: var(--orange); font-style: normal; }
+.typewriter-line { min-height: .96em; display: block; }
+.typewriter-line i { width: .055em; height: .8em; margin-left: .055em; display: inline-block; vertical-align: -.04em; background: currentColor; animation: typewriter-cursor .8s steps(1) infinite; }
+@keyframes typewriter-cursor { 0%, 46% { opacity: 1; } 47%, 100% { opacity: 0; } }
 .hero-copy p { color: var(--muted); font-size: 17px; line-height: 1.65; max-width: 540px; margin: 0; }
 .live-pill { color: #ff9a75; display: flex; align-items: center; gap: 7px; }
 .live-pill span, .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 0 4px rgba(240,90,36,.15); }
 .hero-device-stage { min-height: 500px; position: relative; z-index: 1; display: grid; place-items: center; isolation: isolate; }
 .hero-device-orbit { position: absolute; width: 415px; height: 415px; border: 1px solid color-mix(in srgb, var(--orange) 36%, var(--line)); border-radius: 50%; box-shadow: 0 0 0 52px color-mix(in srgb, var(--orange) 5%, transparent), 0 0 0 104px color-mix(in srgb, var(--orange) 3%, transparent); transform: translate(11px,-3px); }
 .hero-phone { width: 246px; padding: 7px; border: 1px solid #3c3c38; border-radius: 42px; background: linear-gradient(145deg,#4a4a46 0,#0b0b0a 28%,#272724 70%,#080807 100%); box-shadow: 0 38px 70px rgba(20,20,17,.32), inset 0 0 0 1px rgba(255,255,255,.14); transform: rotate(5deg); }
-.hero-phone-frame { height: 488px; position: relative; overflow: hidden; border: 2px solid #080807; border-radius: 35px; color: #f7f6f2; background: #11110f; }
+.hero-phone-frame { height: 488px; position: relative; overflow: hidden; border: 2px solid #080807; border-radius: 35px; color: var(--phone-ink); background: var(--phone-surface); transition: color .2s ease, background-color .2s ease; }
 .hero-phone-island { position: absolute; z-index: 3; top: 9px; left: 50%; width: 74px; height: 20px; border-radius: 14px; background: #050504; transform: translateX(-50%); }
 .hero-phone-status { height: 39px; padding: 10px 16px 0; position: relative; z-index: 2; display: flex; justify-content: space-between; font-size: 7px; font-weight: 700; }
 .hero-phone-status > span:last-child { display: flex; gap: 3px; }
 .hero-phone-status svg { width: 9px; height: 9px; }
-.hero-phone-app { height: calc(100% - 39px); display: flex; flex-direction: column; background: radial-gradient(circle at 92% 4%,rgba(240,90,36,.3),transparent 24%),#161613; }
-.hero-phone-app > header { height: 48px; padding: 9px 13px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid #2e2e29; }
+.hero-phone-app { height: calc(100% - 39px); display: flex; flex-direction: column; background: radial-gradient(circle at 92% 4%,rgba(240,90,36,.2),transparent 24%),var(--phone-paper); transition: background-color .2s ease; }
+.hero-phone-app > header { height: 48px; padding: 9px 13px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--phone-line); }
 .hero-phone-brand { display: flex; align-items: center; gap: 6px; font-family: 'Space Grotesk'; font-size: 8px; }
-.hero-phone-brand > span { width: 23px; height: 23px; display: grid; place-items: center; border-radius: 50%; color: white; background: #090908; box-shadow: inset -4px -4px 0 var(--orange); font-size: 6px; }
+.hero-phone-brand-logo { width: 25px; height: 25px; position: relative; flex: none; transform: scale(1.12); }
+.hero-phone-brand-logo img { width: 25px; height: 25px; position: absolute; inset: 0; }
+.hero-phone-logo-dark { display: none; }
+.dark .hero-phone-logo-light { display: none; }
+.dark .hero-phone-logo-dark { display: block; }
 .hero-phone-brand strong { color: var(--orange); }
-.hero-phone-avatar { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid #494941; border-radius: 50%; color: #aaa9a4; font-size: 6px; }
+.hero-phone-avatar { width: 22px; height: 22px; display: grid; place-items: center; border: 1px solid var(--phone-line); border-radius: 50%; color: var(--phone-muted); font-size: 6px; }
 .hero-phone-intro { padding: 17px 14px 15px; }
-.hero-phone-intro small { color: #77766f; font-size: 6px; letter-spacing: .14em; }
+.hero-phone-intro small { color: var(--phone-muted); font-size: 6px; letter-spacing: .14em; }
 .hero-phone-intro h2 { margin: 6px 0 11px; font-family: 'Space Grotesk'; font-size: 27px; line-height: .87; letter-spacing: -.06em; }
 .hero-phone-intro h2 em { color: var(--orange); font-style: normal; }
 .hero-phone-intro > div { display: flex; gap: 5px; }
-.hero-phone-intro > div span { padding: 5px 7px; border: 1px solid #383832; border-radius: 10px; color: #aaa9a4; font-size: 6px; text-transform: uppercase; letter-spacing: .07em; }
+.hero-phone-intro > div span { padding: 5px 7px; border: 1px solid var(--phone-line); border-radius: 10px; color: var(--phone-muted); font-size: 6px; text-transform: uppercase; letter-spacing: .07em; }
 .hero-phone-intro > div span:first-child { color: #ff9a75; border-color: rgba(240,90,36,.35); background: rgba(240,90,36,.09); }
-.hero-phone-date { padding: 8px 13px; display: flex; align-items: center; justify-content: space-between; border-block: 1px solid #2c2c27; color: #77766f; font-size: 6px; text-transform: uppercase; letter-spacing: .1em; }
-.hero-phone-date b { color: #f7f6f2; }
+.hero-phone-date { padding: 8px 13px; display: flex; align-items: center; justify-content: space-between; border-block: 1px solid var(--phone-line); color: var(--phone-muted); font-size: 6px; text-transform: uppercase; letter-spacing: .1em; }
+.hero-phone-date b { color: var(--phone-ink); }
 .hero-phone-matches { flex: 1; display: grid; align-content: start; }
-.hero-phone-matches article { padding: 9px 13px; border-bottom: 1px solid #2a2a25; }
+.hero-phone-matches article { padding: 9px 13px; border-bottom: 1px solid var(--phone-line); }
 .hero-phone-matches article > div { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.hero-phone-matches article > div:first-child { margin-bottom: 5px; color: #77766f; font-size: 5px; text-transform: uppercase; letter-spacing: .06em; }
+.hero-phone-matches article > div:first-child { margin-bottom: 5px; color: var(--phone-muted); font-size: 5px; text-transform: uppercase; letter-spacing: .06em; }
 .hero-phone-matches article > div:first-child span { color: #ff8a61; }
 .hero-phone-matches p { min-width: 0; margin: 2px 0; display: flex; align-items: center; gap: 6px; overflow: hidden; font-size: 7px; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
 .hero-phone-matches img { width: 14px; height: 14px; flex: none; }
 .hero-phone-matches b { font-family: 'Space Grotesk'; font-size: 9px; }
-.hero-phone-empty { min-height: 145px; display: grid; place-items: center; align-content: center; gap: 8px; color: #77766f; font-size: 7px; }
+.hero-phone-empty { min-height: 145px; display: grid; place-items: center; align-content: center; gap: 8px; color: var(--phone-muted); font-size: 7px; }
 .hero-phone-empty svg { width: 22px; color: var(--orange); }
-.hero-phone-app > footer { height: 35px; padding: 0 13px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid #30302b; color: #73726c; font-size: 5px; text-transform: uppercase; }
+.hero-phone-app > footer { height: 35px; padding: 0 13px; display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--phone-line); color: var(--phone-muted); font-size: 5px; text-transform: uppercase; }
 .hero-phone-app > footer span:first-child { color: var(--orange); }
 .hero-device-note { position: absolute; z-index: 2; min-width: 105px; padding: 12px 14px; display: grid; border: 1px solid var(--line); border-radius: 13px; color: var(--ink); background: color-mix(in srgb,var(--paper) 92%,transparent); box-shadow: 0 16px 40px rgba(20,20,17,.11); backdrop-filter: blur(12px); }
 .hero-device-note span, .hero-device-note small { color: var(--muted); font-size: 7px; text-transform: uppercase; letter-spacing: .1em; }

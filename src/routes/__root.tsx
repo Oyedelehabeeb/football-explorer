@@ -42,6 +42,8 @@ export const Route = createRootRouteWithContext<MyRouterContext>()({
       ...seo,
       meta: [{ charSet: 'utf-8' }, { name: 'viewport', content: 'width=device-width, initial-scale=1' }, ...seo.meta],
       links: [
+      { rel: 'icon', href: '/brand/football-explorer-logo-dark.png', type: 'image/png' },
+      { rel: 'manifest', href: '/site.webmanifest' },
       { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
       { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossOrigin: 'anonymous' },
       { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap' },
@@ -69,7 +71,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <a className="skip-link" href="#main-content">Skip to content</a>
         <header className="site-header">
           <div className="page-shell header-inner">
-            <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-ball" aria-hidden="true">FE</span><span>Football<strong>Explorer</strong></span></a>
+            <a className="wordmark" href="/" aria-label="Football Explorer home"><span className="wordmark-logo" aria-hidden="true"><img className="wordmark-logo-light" src="/brand/football-explorer-logo.png" alt="" width="42" height="42" /><img className="wordmark-logo-dark" src="/brand/football-explorer-logo-dark.png" alt="" width="42" height="42" /></span><span>Football<strong>Explorer</strong></span></a>
             <nav aria-label="Primary navigation"><Link to="/" activeOptions={{ exact: true }} activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Matches</Link><Link to="/countries" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Countries</Link><Link to="/competitions" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Competitions</Link><Link to="/teams" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Teams</Link><Link to="/players" activeProps={{ className: 'is-active', 'aria-current': 'page' }}>Players</Link></nav>
             <div className="header-actions"><Link to="/search" aria-label="Search" activeProps={{ className: 'is-active' }}><Search aria-hidden="true" /></Link><ThemeToggle /></div>
           </div>

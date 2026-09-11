@@ -1,0 +1,17 @@
+{
+  "name": "Football Explorer",
+  "short_name": "Football Explorer",
+  "description": "Football intelligence, without the noise.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f7f6f2",
+  "theme_color": "#171714",
+  "icons": [
+    {
+      "src": "/brand/football-explorer-logo-dark.png",
+      "sizes": "1254x1254",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

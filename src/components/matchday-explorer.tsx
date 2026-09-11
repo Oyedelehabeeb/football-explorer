@@ -18,6 +18,7 @@ const FILTERS: Array<{ value: MatchFilter; label: string }> = [
 ]
 
 const MATCHES_PER_PAGE = 30
+const HERO_PHRASES = ['One clear view.', 'Every league, in focus.', 'The full story.']
 
 interface MatchdayExplorerProps { date: string; timezone: string; filter: MatchFilter; initialData: MatchdayResult }
 
@@ -56,6 +57,38 @@ function EmptyState({ filter }: { filter: MatchFilter }) {
   return <div className="empty-state"><div className="empty-icon"><Search aria-hidden="true" /></div><h2>No {filter === 'all' ? '' : `${filter} `}matches found</h2><p>Try another match status or move to a different date.</p></div>
 }
 
+function TypewriterHeadline() {
+  const [phraseIndex, setPhraseIndex] = useState(0)
+  const [characterCount, setCharacterCount] = useState(HERO_PHRASES[0].length)
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
+    const phrase = HERO_PHRASES[phraseIndex]
+    const complete = characterCount === phrase.length
+    const empty = characterCount === 0
+    const delay = complete && !deleting ? 1_800 : empty && deleting ? 380 : deleting ? 38 : 72
+    const timer = window.setTimeout(() => {
+      if (complete && !deleting) {
+        setDeleting(true)
+        return
+      }
+      if (empty && deleting) {
+        setDeleting(false)
+        setPhraseIndex((index) => (index + 1) % HERO_PHRASES.length)
+        return
+      }
+      setCharacterCount((count) => count + (deleting ? -1 : 1))
+    }, delay)
+
+    return () => window.clearTimeout(timer)
+  }, [characterCount, deleting, phraseIndex])
+
+  const visiblePhrase = HERO_PHRASES[phraseIndex].slice(0, characterCount)
+  return <h1 id="matchday-title">Every match.<br /><span className="sr-only">One clear view. Every league, in focus. The full story.</span><em className="typewriter-line" aria-hidden="true"><span>{visiblePhrase}</span><i /></em></h1>
+}
+
 function HeroPhone({ fixtures, liveCount, finishedCount, timezone }: { fixtures: FixtureSummary[]; liveCount: number; finishedCount: number; timezone: string }) {
   const preview = fixtures.slice(0, 3)
   const competitionCount = new Set(fixtures.map((item) => item.league.id)).size
@@ -78,7 +111,7 @@ function HeroPhone({ fixtures, liveCount, finishedCount, timezone }: { fixtures:
           <div className="hero-phone-status"><span>{statusTime}</span><span><Signal /><Wifi /><BatteryFull /></span></div>
           <div className="hero-phone-island" />
           <div className="hero-phone-app">
-            <header><div className="hero-phone-brand"><span>FE</span><b>Football<strong>Explorer</strong></b></div><span className="hero-phone-avatar">FE</span></header>
+            <header><div className="hero-phone-brand"><span className="hero-phone-brand-logo"><img className="hero-phone-logo-light" src="/brand/football-explorer-logo.png" alt="" width="25" height="25" /><img className="hero-phone-logo-dark" src="/brand/football-explorer-logo-dark.png" alt="" width="25" height="25" /></span><b>Football<strong>Explorer</strong></b></div><span className="hero-phone-avatar">FE</span></header>
             <section className="hero-phone-intro"><small>THE WORLD GAME</small><h2>Today’s<br /><em>football.</em></h2><div><span>{liveCount} live</span><span>{finishedCount} final</span></div></section>
             <div className="hero-phone-date"><span>Match centre</span><b>Today</b></div>
             <div className="hero-phone-matches">
@@ -161,7 +194,7 @@ export function MatchdayExplorer({ date, timezone, filter, initialData }: Matchd
   return (
     <main id="main-content">
       <section className="matchday-hero page-shell" aria-labelledby="matchday-title">
-        <div className="hero-copy"><span className="eyebrow"><span /> The world game, in focus</span><h1 id="matchday-title">Every match.<br /><em>One clear view.</em></h1><p>Explore today’s football across competitions, with scores, match states and the context that matters.</p></div>
+        <div className="hero-copy"><span className="eyebrow"><span /> The world game, in focus</span><TypewriterHeadline /><p>Explore today’s football across competitions, with scores, match states and the context that matters.</p></div>
         <HeroPhone fixtures={filtered} liveCount={liveCount} finishedCount={finishedCount} timezone={timezone} />
       </section>
 
