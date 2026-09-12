@@ -1,5 +1,5 @@
 import { Link } from '@tanstack/react-router'
-import { Activity, ArrowLeft, CalendarDays, Clock3, MapPin, ShieldAlert, Shirt, Trophy, UserRound } from 'lucide-react'
+import { Activity, ArrowLeft, ArrowUpRight, CalendarDays, Clock3, MapPin, ShieldAlert, Shirt, Trophy, UserRound } from 'lucide-react'
 
 import { Button } from '#/components/ui/button'
 import { HeadToHead } from '#/components/head-to-head'
@@ -55,7 +55,7 @@ function Pitch({ lineup }: { lineup: FixtureLineup }) {
 }
 
 function LineupCard({ lineup }: { lineup: FixtureLineup }) {
-  return <article className="lineup-card"><header><img src={lineup.team.logo} alt="" /><div><span>{lineup.formation ?? 'Formation unavailable'}</span><h3>{lineup.team.name}</h3></div></header><Pitch lineup={lineup} /><div className="lineup-coach"><UserRound aria-hidden="true" /><span>Coach</span><strong>{lineup.coach.name ?? 'Unavailable'}</strong></div></article>
+  return <article className="lineup-card"><header><img src={lineup.team.logo} alt="" /><div><span>{lineup.formation ?? 'Formation unavailable'}</span><h3>{lineup.team.name}</h3></div></header><Pitch lineup={lineup} /><div className="lineup-coach"><UserRound aria-hidden="true" /><span>Coach</span><strong>{lineup.coach.name ?? 'Unavailable'}</strong></div><div className="lineup-substitutes"><div className="lineup-substitutes-heading"><Shirt aria-hidden="true" /><div><span>Team selection</span><h4>Substitutes</h4></div><strong>{lineup.substitutes.length}</strong></div>{lineup.substitutes.length ? <ol>{lineup.substitutes.map(({ player }) => <li key={player.id}><span className="substitute-number">{player.number ?? '—'}</span><strong>{player.name}</strong><span className="substitute-position">{player.pos ?? 'SUB'}</span></li>)}</ol> : <p>The substitutes have not been published for this team.</p>}</div></article>
 }
 
 const PREFERRED_STATS = ['Ball Possession', 'Total Shots', 'Shots on Goal', 'Shots on Target', 'Corner Kicks', 'Fouls', 'Offsides', 'Yellow Cards', 'Red Cards', 'Total passes', 'Passes accurate', 'Passes %']
@@ -101,10 +101,10 @@ export function MatchDetail({ result, timezone }: MatchDetailProps) {
   const isScheduled = (FIXTURE_STATUS.scheduled as readonly string[]).includes(match.fixture.status.short)
 
   return <main id="main-content" className="match-detail-page">
-    <section className="match-hero"><div className="page-shell"><Link className="match-back" to="/" search={{ timezone }}><ArrowLeft aria-hidden="true" /> All matches</Link><div className="match-competition"><img src={match.league.logo} alt="" /><span>{match.league.country}</span><strong>{match.league.name}</strong><span>·</span><span>{match.league.round}</span></div><div className="match-scoreline">
-      <div className="match-team is-home"><img src={match.teams.home.logo} alt="" /><h1>{match.teams.home.name}</h1></div>
+    <section className="match-hero"><div className="page-shell"><Link className="match-back" to="/" search={{ timezone }}><ArrowLeft aria-hidden="true" /> All matches</Link><Link className="match-competition" to="/competitions/$leagueId" params={{ leagueId: String(match.league.id) }} search={{ season: match.league.season, timezone }} aria-label={`Explore ${match.league.name} standings and fixtures`}><img src={match.league.logo} alt="" /><span>{match.league.country}</span><strong>{match.league.name}</strong><span>·</span><span>{match.league.round}</span><ArrowUpRight aria-hidden="true" /></Link><div className="match-scoreline">
+      <Link className="match-team is-home" to="/teams/$teamId" params={{ teamId: String(match.teams.home.id) }} search={{ league: match.league.id, season: match.league.season, timezone }} aria-label={`Explore ${match.teams.home.name} team page`}><img src={match.teams.home.logo} alt="" /><div><h1>{match.teams.home.name}</h1><small>View team <ArrowUpRight aria-hidden="true" /></small></div></Link>
       <div className="match-score-centre"><span className={isLiveStatus(match.fixture.status.short) ? 'is-live' : ''}>{matchStatus(match)}</span><strong>{hasScore ? `${match.goals.home ?? 0} — ${match.goals.away ?? 0}` : 'VS'}</strong><small>{date}</small></div>
-      <div className="match-team is-away"><img src={match.teams.away.logo} alt="" /><h1>{match.teams.away.name}</h1></div>
+      <Link className="match-team is-away" to="/teams/$teamId" params={{ teamId: String(match.teams.away.id) }} search={{ league: match.league.id, season: match.league.season, timezone }} aria-label={`Explore ${match.teams.away.name} team page`}><img src={match.teams.away.logo} alt="" /><div><h1>{match.teams.away.name}</h1><small>View team <ArrowUpRight aria-hidden="true" /></small></div></Link>
     </div><div className="match-facts"><span><CalendarDays aria-hidden="true" />{date}</span>{match.fixture.venue.name && <span><MapPin aria-hidden="true" />{match.fixture.venue.name}{match.fixture.venue.city ? `, ${match.fixture.venue.city}` : ''}</span>}{match.fixture.referee && <span><UserRound aria-hidden="true" />{match.fixture.referee}</span>}<span><Clock3 aria-hidden="true" />{timezone.replaceAll('_', ' ')}</span></div></div></section>
 
     <div className="match-detail-grid page-shell"><div className="match-main-column">

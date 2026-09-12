@@ -51,19 +51,20 @@ export function CompetitionDetail({ result, timezone }: CompetitionDetailProps) 
       <div className="competition-detail-controls"><label><span>Season</span><Select value={String(season)} onValueChange={(value) => updateSearch({ season: Number(value) })}><SelectTrigger aria-label="Select season"><SelectValue /></SelectTrigger><SelectContent>{AVAILABLE_PLAN_SEASONS.map((year) => <SelectItem key={year} value={String(year)}>{seasonLabel(year)}</SelectItem>)}</SelectContent></Select></label><div><span>Teams</span><strong>{teams.length || '—'}</strong></div><div><span>Rounds</span><strong>{rounds.length || '—'}</strong></div></div>
     </div></section>
 
+    <nav className="entity-section-nav page-shell" aria-label={`${competition.league.name} page sections`}><a href="#competition-table">Table</a><a href="#competition-fixtures">Fixtures</a>{coverage?.top_scorers || coverage?.top_assists || coverage?.top_cards ? <a href="#competition-leaders">Leaders</a> : null}<a href="#competition-clubs">Clubs</a></nav>
     <div className="competition-detail-layout page-shell">
       <div className="competition-detail-main">
-        <section className="competition-panel" aria-labelledby="standings-title"><header><div><span className="section-number">01 / TABLE</span><h2 id="standings-title">Standings</h2></div><small>{seasonLabel(season)}</small></header>
+        <section id="competition-table" className="competition-panel" aria-labelledby="standings-title"><header><div><span className="section-number">01 / TABLE</span><h2 id="standings-title">Standings</h2></div><small>{seasonLabel(season)}</small></header>
           {standings.length ? standings.map((group, index) => <div key={group[0]?.group ?? index}>{standings.length > 1 && <h3 className="standing-group-title">{group[0]?.group}</h3>}<StandingsTable rows={group} leagueId={competition.league.id} season={season} /></div>) : <Unavailable label="Standings" unavailable={unavailable.includes('standings')} />}
         </section>
 
-        <section className="competition-panel" aria-labelledby="fixtures-title"><header><div><span className="section-number">02 / FIXTURES</span><h2 id="fixtures-title">Round fixtures</h2></div>{rounds.length > 0 && <Select value={selectedRound ?? undefined} onValueChange={(value) => updateSearch({ round: value })}><SelectTrigger aria-label="Select round" className="round-select"><SelectValue placeholder="Select round" /></SelectTrigger><SelectContent>{rounds.map((item) => <SelectItem key={item.round} value={item.round}>{item.round}</SelectItem>)}</SelectContent></Select>}</header>
+        <section id="competition-fixtures" className="competition-panel" aria-labelledby="fixtures-title"><header><div><span className="section-number">02 / FIXTURES</span><h2 id="fixtures-title">Round fixtures</h2></div>{rounds.length > 0 && <Select value={selectedRound ?? undefined} onValueChange={(value) => updateSearch({ round: value })}><SelectTrigger aria-label="Select round" className="round-select"><SelectValue placeholder="Select round" /></SelectTrigger><SelectContent>{rounds.map((item) => <SelectItem key={item.round} value={item.round}>{item.round}</SelectItem>)}</SelectContent></Select>}</header>
           {fixtures.length ? <div className="competition-fixtures">{fixtures.map((fixture) => <FixtureCard key={fixture.fixture.id} fixture={fixture} />)}</div> : <Unavailable label="Fixtures" unavailable={unavailable.includes('fixtures') || unavailable.includes('rounds')} />}
         </section>
 
-        {coverage?.top_scorers || coverage?.top_assists || coverage?.top_cards ? <CompetitionPerformers key={`${competition.league.id}-${season}`} leagueId={competition.league.id} season={season} /> : null}
+        {coverage?.top_scorers || coverage?.top_assists || coverage?.top_cards ? <div id="competition-leaders"><CompetitionPerformers key={`${competition.league.id}-${season}`} leagueId={competition.league.id} season={season} /></div> : null}
 
-        <section className="competition-panel" aria-labelledby="clubs-title"><header><div><span className="section-number">04 / CLUBS</span><h2 id="clubs-title">Competing teams</h2></div><small>{teams.length} clubs</small></header>
+        <section id="competition-clubs" className="competition-panel" aria-labelledby="clubs-title"><header><div><span className="section-number">04 / CLUBS</span><h2 id="clubs-title">Competing teams</h2></div><small>{teams.length} clubs</small></header>
           {teams.length ? <div className="competition-team-grid">{teams.map(({ team, venue }) => <Link key={team.id} to="/teams/$teamId" params={{ teamId: String(team.id) }} search={{ league: competition.league.id, season }}><img src={team.logo} alt="" /><div><h3>{team.name}</h3><p><MapPin aria-hidden="true" />{venue.city ?? team.country}</p></div><span>{team.founded ?? '—'}</span></Link>)}</div> : <Unavailable label="Teams" unavailable={unavailable.includes('teams')} />}
         </section>
       </div>
